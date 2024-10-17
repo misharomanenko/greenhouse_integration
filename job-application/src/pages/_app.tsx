@@ -4,9 +4,11 @@ import Header from "@/components/Header";
 
 export default function App({ Component, pageProps }: AppProps) {
   return (
-    <>
+    <div className="min-h-screen bg-gradient-to-br from-primary-50 to-primary-100 dark:from-neutral-900 dark:to-neutral-800">
       <Header />
-      <Component {...pageProps} />
-    </>
+      <div className="pt-16"> {/* Add padding-top to account for fixed header */}
+        <Component {...pageProps} />
+      </div>
+    </div>
   );
 }

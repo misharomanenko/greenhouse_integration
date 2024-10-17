@@ -1,9 +1,9 @@
 import { useRouter } from 'next/router';
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import localFont from 'next/font/local';
 import { FaBriefcase, FaMapMarkerAlt, FaClock, FaArrowLeft } from 'react-icons/fa';
-import { jobListings } from '../../data/jobs';
-import { useState } from 'react';
+import { jobListings } from '@/data/jobs';
 
 const geistSans = localFont({
     src: '../../../public/fonts/GeistVF.woff',
@@ -15,17 +15,62 @@ const geistMono = localFont({
     variable: '--font-geist-mono',
 });
 
+interface Job {
+  id: number;
+  title: string;
+  company: string;
+  location: string;
+  type: string;
+  description: string;
+}
+
 export default function JobDetails() {
   const router = useRouter();
   const { id } = router.query;
+  const [job, setJob] = useState<Job | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [dragActive, setDragActive] = useState(false);
   const [file, setFile] = useState<File | null>(null);
 
-  const job = jobListings.find(job => job.id === Number(id));
+  useEffect(() => {
+    if (!id) return;
 
-  if (!job) {
-    return <div>Job not found</div>;
-  }
+    const fetchJobDetails = async () => {
+      try {
+        const jobId = parseInt(id as string, 10);
+        
+        if (jobId > 1000) {
+          // Fetch from Greenhouse API
+          const response = await fetch(`/api/greenhouse/${id}`);
+          if (!response.ok) {
+            throw new Error('Failed to fetch job details');
+          }
+          const data = await response.json();
+          setJob(data);
+        } else {
+          // Use local jobListings data
+          const localJob = jobListings.find(job => job.id === jobId);
+          if (localJob) {
+            setJob(localJob);
+          } else {
+            throw new Error('Job not found');
+          }
+        }
+      } catch (error) {
+        console.error('Error fetching job details:', error);
+        setError('Failed to load job details');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchJobDetails();
+  }, [id]);
+
+  if (loading) return <div>Loading...</div>;
+  if (error) return <div>{error}</div>;
+  if (!job) return <div>Job not found</div>;
 
   const handleDrag = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
