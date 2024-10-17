@@ -7,7 +7,7 @@ const Header = () => {
   const [showUserInfo, setShowUserInfo] = useState(false);
 
   return (
-    <header className="bg-white dark:bg-gray-800 shadow-md relative">
+    <header className="bg-white dark:bg-gray-800 shadow-md fixed top-0 left-0 right-0 z-50 w-full">
       <div className="container mx-auto px-4 py-2 flex justify-between items-center">
         <Link href="/" className="text-xl font-bold text-gray-800 dark:text-gray-100">
           Company Name

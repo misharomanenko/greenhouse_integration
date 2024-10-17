@@ -2,7 +2,7 @@ import { useState } from 'react';
 import Link from 'next/link';
 import localFont from 'next/font/local';
 import { FaSearch, FaBriefcase, FaMapMarkerAlt, FaClock } from 'react-icons/fa';
-import { jobListings } from '../data/jobs';
+import { jobListings } from '@/data/jobs';
 
 const geistSans = localFont({
   src: '../../public/fonts/GeistVF.woff',
@@ -27,7 +27,7 @@ export default function Home() {
       <main className="container mx-auto px-4 py-12">
         <h1 className="text-5xl font-bold mb-12 text-center text-primary-600 dark:text-primary-400 drop-shadow-lg">Job Openings</h1>
         
-        <div className="mb-12 max-w-2xl mx-auto">
+        <div className="max-w-2xl mx-auto mb-8">
           <div className="relative">
             <input
               type="text"
@@ -40,7 +40,7 @@ export default function Home() {
           </div>
         </div>
 
-        <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+        <div className="space-y-10 max-w-2xl mx-auto">
           {filteredJobs.map(job => (
             <Link href={`/job/${job.id}`} key={job.id} className="block">
               <div className="bg-white dark:bg-neutral-800 rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300 p-6 border border-primary-200 dark:border-primary-700">
