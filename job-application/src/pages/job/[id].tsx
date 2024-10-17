@@ -36,26 +36,14 @@ export default function JobDetails() {
   useEffect(() => {
     if (!id) return;
 
-    const fetchJobDetails = async () => {
+    const fetchJobDetails = () => {
       try {
         const jobId = parseInt(id as string, 10);
-        
-        if (jobId > 1000) {
-          // Fetch from Greenhouse API
-          const response = await fetch(`/api/greenhouse/${id}`);
-          if (!response.ok) {
-            throw new Error('Failed to fetch job details');
-          }
-          const data = await response.json();
-          setJob(data);
+        const localJob = jobListings.find(job => job.id === jobId);
+        if (localJob) {
+          setJob(localJob);
         } else {
-          // Use local jobListings data
-          const localJob = jobListings.find(job => job.id === jobId);
-          if (localJob) {
-            setJob(localJob);
-          } else {
-            throw new Error('Job not found');
-          }
+          throw new Error('Job not found');
         }
       } catch (error) {
         console.error('Error fetching job details:', error);
@@ -106,7 +94,7 @@ export default function JobDetails() {
             <FaArrowLeft className="mr-2" /> Back to listings
           </Link>
           
-          <h1 className="text-4xl font-bold mb-4 text-gray-800 dark:text-gray-200">{job.title}</h1>
+          <h1 className="text-4xl font-bold mb-4 text-blue-600 dark:text-blue-400">{job.title}</h1>
           <div className="flex flex-wrap justify-center items-center text-gray-600 dark:text-gray-300 mb-6">
             <p className="mr-6 mb-2 flex items-center">
               <FaBriefcase className="mr-2 text-gray-400" /> {job.company}
