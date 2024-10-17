@@ -1,16 +1,9 @@
-// Define the JobListing type
-export interface JobListing {
-  id: number;
-  title: string;
-  company: string;
-  location: string;
-  type: string;
-  description: string;
-}
+
+import { JobListing } from '@/types/job';
 
 export const jobListings: JobListing[] = [
   {
-    "id": 4285367007,
+    "id": "4285367007",
     "title": "Founding Engineer task",
     "company": "Paraform",
     "location": "San Francisco",
@@ -18,7 +11,7 @@ export const jobListings: JobListing[] = [
     "description": "Cool Job"
   },
   {
-    "id": 2,
+    "id": "2",
     "title": "Backend Engineer",
     "company": "DataSystems",
     "location": "New York, NY",
@@ -26,7 +19,7 @@ export const jobListings: JobListing[] = [
     "description": "Join our backend team to develop scalable APIs and microservices using Node.js and PostgreSQL."
   },
   {
-    "id": 3,
+    "id": "3",
     "title": "UX Designer",
     "company": "DesignHub",
     "location": "San Francisco, CA",
@@ -34,7 +27,7 @@ export const jobListings: JobListing[] = [
     "description": "We are looking for a talented UX Designer to create intuitive and visually appealing user interfaces for our clients."
   },
   {
-    "id": 4,
+    "id": "4",
     "title": "DevOps Specialist",
     "company": "CloudOps",
     "location": "Remote",
@@ -42,7 +35,7 @@ export const jobListings: JobListing[] = [
     "description": "Help us streamline our deployment processes and manage cloud infrastructure using AWS and Kubernetes."
   },
   {
-    "id": 5,
+    "id": "5",
     "title": "Data Scientist",
     "company": "AI Innovations",
     "location": "Boston, MA",

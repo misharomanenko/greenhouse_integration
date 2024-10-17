@@ -4,6 +4,8 @@ import Link from 'next/link';
 import localFont from 'next/font/local';
 import { FaBriefcase, FaMapMarkerAlt, FaClock, FaArrowLeft } from 'react-icons/fa';
 import { jobListings } from '@/data/jobs';
+import { addUserApplication, UserApplication } from '@/data/applications';
+import { currentUser } from '@/data/user';
 
 const geistSans = localFont({
     src: '../../../public/fonts/GeistVF.woff',
@@ -16,7 +18,7 @@ const geistMono = localFont({
 });
 
 interface Job {
-  id: number;
+  id: string;
   title: string;
   company: string;
   location: string;
@@ -36,14 +38,23 @@ export default function JobDetails() {
   useEffect(() => {
     if (!id) return;
 
-    const fetchJobDetails = () => {
+    const fetchJobDetails = async () => {
       try {
-        const jobId = parseInt(id as string, 10);
-        const localJob = jobListings.find(job => job.id === jobId);
+        const jobId = id as string;
+        
+        // First, try to find the job in local listings
+        const localJob = jobListings.find(job => job.id.toString() === jobId);
+        
         if (localJob) {
           setJob(localJob);
         } else {
-          throw new Error('Job not found');
+          // If not found locally, fetch from Greenhouse API
+          const response = await fetch(`/api/greenhouse/${jobId}`);
+          if (!response.ok) {
+            throw new Error('Failed to fetch job details');
+          }
+          const data = await response.json();
+          setJob(data);
         }
       } catch (error) {
         console.error('Error fetching job details:', error);
@@ -86,6 +97,49 @@ export default function JobDetails() {
     }
   };
 
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (!job) return;
+
+    const formData = new FormData(e.currentTarget);
+    
+    const application: UserApplication = {
+      userId: currentUser.userId,
+      name: formData.get('name') as string,
+      email: formData.get('email') as string,
+      linkedIn: formData.get('linkedin') as string,
+      desiredCompensation: formData.get('compensation') as string,
+      remotePreference: formData.get('remote') as string,
+      yearsOfExperience: parseInt(formData.get('experience') as string, 10),
+      resumeFileName: file ? file.name : '',
+      jobDetails: {
+        ...job,
+        id: job.id.toString()
+      },
+      applicationDate: new Date().toISOString(),
+    };
+
+    try {
+      const response = await fetch('/api/submit-application', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(application),
+      });
+
+      if (response.ok) {
+        alert('Application submitted successfully!');
+        router.push('/'); // Redirect to the index page
+      } else {
+        throw new Error('Failed to submit application');
+      }
+    } catch (error) {
+      console.error('Error submitting application:', error);
+      alert('Failed to submit application. Please try again.');
+    }
+  };
+
   return (
     <div className={`${geistSans.variable} ${geistMono.variable} min-h-screen bg-gradient-to-br from-primary-50 to-primary-100 dark:from-neutral-900 dark:to-neutral-800 text-neutral-800 dark:text-neutral-200 flex items-center justify-center`}>
       <main className="container mx-auto px-4 py-12 max-w-3xl">
@@ -111,28 +165,28 @@ export default function JobDetails() {
           <p className="text-gray-700 dark:text-gray-300 mb-8">{job.description}</p>
           
           <h2 className="text-2xl font-semibold mb-4 text-gray-800 dark:text-gray-200">Apply Now</h2>
-          <form className="space-y-8">
+          <form className="space-y-8" onSubmit={handleSubmit}>
             <div className="relative">
-              <input type="text" id="name" name="name" placeholder="Name" className="w-full p-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500" />
+              <input type="text" id="name" name="name" placeholder="Name" className="w-full p-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 text-black placeholder-gray-400" />
             </div>
             <div className="relative">
-              <input type="email" id="email" name="email" placeholder="Email" className="w-full p-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500" />
+              <input type="email" id="email" name="email" placeholder="Email" className="w-full p-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 text-black placeholder-gray-400" />
             </div>
             <div className="relative">
-              <input type="url" id="linkedin" name="linkedin" placeholder="LinkedIn Profile" className="w-full p-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500" />
+              <input type="url" id="linkedin" name="linkedin" placeholder="LinkedIn Profile" className="w-full p-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 text-black placeholder-gray-400" />
             </div>
             <div className="relative">
-              <input type="text" id="compensation" name="compensation" placeholder="Desired Compensation" className="w-full p-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500" />
+              <input type="text" id="compensation" name="compensation" placeholder="Desired Compensation" className="w-full p-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 text-black placeholder-gray-400" />
             </div>
             <div className="relative">
-              <select id="remote" name="remote" className="w-full p-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 appearance-none">
+              <select id="remote" name="remote" className="w-full p-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 appearance-none text-black">
                 <option value="">Remote Preferred</option>
                 <option value="yes">Yes</option>
                 <option value="no">No</option>
               </select>
             </div>
             <div className="relative">
-              <input type="number" id="experience" name="experience" min="0" placeholder="Years of Experience" className="w-full p-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500" />
+              <input type="number" id="experience" name="experience" min="0" placeholder="Years of Experience" className="w-full p-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 text-black placeholder-gray-400" />
             </div>
             <div>
               <label htmlFor="resume" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Resume</label>
@@ -145,7 +199,7 @@ export default function JobDetails() {
               >
                 <div className="space-y-1 text-center">
                   <svg className="mx-auto h-12 w-12 text-gray-400" stroke="currentColor" fill="none" viewBox="0 0 48 48" aria-hidden="true">
-                    <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                    <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28M8 32l4 4m4-24h8m-4-4v8m-12 4h.02" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
                   </svg>
                   <div className="flex text-sm text-gray-600">
                     <label htmlFor="file-upload" className="relative cursor-pointer font-medium text-blue-600 hover:text-blue-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-blue-500">
