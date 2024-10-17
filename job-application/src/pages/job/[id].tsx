@@ -120,38 +120,50 @@ export default function JobDetails() {
     const formData = new FormData(e.currentTarget);
     
     const application: UserApplication = {
-      userId: currentUser.userId,
-      name: formData.get('name') as string,
-      email: formData.get('email') as string,
-      linkedIn: formData.get('linkedin') as string,
-      desiredCompensation: formData.get('compensation') as string,
-      remotePreference: formData.get('remote') as string,
-      yearsOfExperience: parseInt(formData.get('experience') as string, 10),
-      resumeFileName: file ? file.name : '',
-      jobDetails: {
-        ...job,
-        id: job.id.toString()
+      user_id: currentUser.userId,
+      job_id: parseInt(job.id),
+      source_id: 7,
+      initial_stage_id: 2708728,
+      referrer: {
+        type: "id",
+        value: 770
       },
-      applicationDate: new Date().toISOString(),
+      attachments: []
     };
 
-    try {
-      const response = await fetch('/api/submit-application', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(application),
-      });
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = async () => {
+        const base64String = reader.result as string;
+        application.attachments.push({
+          filename: file.name,
+          type: "resume",
+          content: base64String.split(',')[1],
+          content_type: file.type
+        });
 
-      if (response.ok) {
-        setShowPopup(true);
-      } else {
-        throw new Error('Failed to submit application');
-      }
-    } catch (error) {
-      console.error('Error submitting application:', error);
-      alert('Failed to submit application. Please try again.');
+        try {
+          const response = await fetch('/api/submit-application', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(application),
+          });
+
+          if (response.ok) {
+            setShowPopup(true);
+          } else {
+            throw new Error('Failed to submit application');
+          }
+        } catch (error) {
+          console.error('Error submitting application:', error);
+          alert('Failed to submit application. Please try again.');
+        }
+      };
+      reader.readAsDataURL(file);
+    } else {
+      alert('Please upload a resume file.');
     }
   };
 

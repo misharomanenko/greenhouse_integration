@@ -1,5 +1,12 @@
-
-import { JobListing } from '@/types/job';
+// Export the JobListing type
+export interface JobListing {
+  id: string;
+  title: string;
+  company: string;
+  location: string;
+  type: string;
+  description: string;
+}
 
 export const jobListings: JobListing[] = [
   {
