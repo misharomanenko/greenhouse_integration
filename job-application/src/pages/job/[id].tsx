@@ -26,6 +26,21 @@ interface Job {
   description: string;
 }
 
+const SubmissionPopup = ({ onClose }: { onClose: () => void }) => (
+  <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+    <div className="bg-white dark:bg-neutral-800 rounded-lg p-8 max-w-md w-full shadow-xl transform transition-all duration-300 scale-100">
+      <h2 className="text-2xl font-bold mb-4 text-primary-600 dark:text-primary-400">Application Submitted!</h2>
+      <p className="text-gray-700 dark:text-gray-300 mb-6">Thank you for your application. We'll be in touch soon!</p>
+      <button 
+        onClick={onClose}
+        className="w-full bg-primary-600 hover:bg-primary-700 text-white font-bold py-3 px-6 rounded-full transition duration-300 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-opacity-50"
+      >
+        Close
+      </button>
+    </div>
+  </div>
+);
+
 export default function JobDetails() {
   const router = useRouter();
   const { id } = router.query;
@@ -34,6 +49,7 @@ export default function JobDetails() {
   const [error, setError] = useState<string | null>(null);
   const [dragActive, setDragActive] = useState(false);
   const [file, setFile] = useState<File | null>(null);
+  const [showPopup, setShowPopup] = useState(false);
 
   useEffect(() => {
     if (!id) return;
@@ -129,8 +145,7 @@ export default function JobDetails() {
       });
 
       if (response.ok) {
-        alert('Application submitted successfully!');
-        router.push('/'); // Redirect to the index page
+        setShowPopup(true);
       } else {
         throw new Error('Failed to submit application');
       }
@@ -143,12 +158,12 @@ export default function JobDetails() {
   return (
     <div className={`${geistSans.variable} ${geistMono.variable} min-h-screen bg-gradient-to-br from-primary-50 to-primary-100 dark:from-neutral-900 dark:to-neutral-800 text-neutral-800 dark:text-neutral-200 flex items-center justify-center`}>
       <main className="container mx-auto px-4 py-12 max-w-3xl">
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-xl p-8 border border-gray-200 dark:border-gray-700">
+        <div className="bg-white dark:bg-neutral-800 rounded-lg shadow-xl p-8 border border-gray-200 dark:border-gray-700">
           <Link href="/" className="inline-flex items-center text-primary-600 dark:text-primary-400 mb-8 hover:underline transition duration-300">
             <FaArrowLeft className="mr-2" /> Back to listings
           </Link>
           
-          <h1 className="text-4xl font-bold mb-4 text-blue-600 dark:text-blue-400">{job.title}</h1>
+          <h1 className="text-4xl font-bold mb-4 text-white dark:text-white text-center">{job.title}</h1>
           <div className="flex flex-wrap justify-center items-center text-gray-600 dark:text-gray-300 mb-6">
             <p className="mr-6 mb-2 flex items-center">
               <FaBriefcase className="mr-2 text-gray-400" /> {job.company}
@@ -161,32 +176,31 @@ export default function JobDetails() {
             </p>
           </div>
           
-          <h2 className="text-2xl font-semibold mb-4 text-gray-800 dark:text-gray-200">Job Description</h2>
-          <p className="text-gray-700 dark:text-gray-300 mb-8">{job.description}</p>
+          <h2 className="font-semibold mb-4 text-gray-800 dark:text-gray-200 inline-block mr-2">Description:</h2>
+          <p className="text-gray-700 dark:text-gray-300 inline">{job.description}</p>
           
-          <h2 className="text-2xl font-semibold mb-4 text-gray-800 dark:text-gray-200">Apply Now</h2>
           <form className="space-y-8" onSubmit={handleSubmit}>
             <div className="relative">
-              <input type="text" id="name" name="name" placeholder="Name" className="w-full p-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 text-black placeholder-gray-400" />
+              <input type="text" id="name" name="name" placeholder="Name" className="w-full p-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 text-black placeholder-gray-400 bg-gray-200" />
             </div>
             <div className="relative">
-              <input type="email" id="email" name="email" placeholder="Email" className="w-full p-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 text-black placeholder-gray-400" />
+              <input type="email" id="email" name="email" placeholder="Email" className="w-full p-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 text-black placeholder-gray-400 bg-gray-200" />
             </div>
             <div className="relative">
-              <input type="url" id="linkedin" name="linkedin" placeholder="LinkedIn Profile" className="w-full p-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 text-black placeholder-gray-400" />
+              <input type="url" id="linkedin" name="linkedin" placeholder="LinkedIn Profile" className="w-full p-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 text-black placeholder-gray-400 bg-gray-200" />
             </div>
             <div className="relative">
-              <input type="text" id="compensation" name="compensation" placeholder="Desired Compensation" className="w-full p-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 text-black placeholder-gray-400" />
+              <input type="text" id="compensation" name="compensation" placeholder="Desired Compensation" className="w-full p-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 text-black placeholder-gray-400 bg-gray-200" />
             </div>
             <div className="relative">
-              <select id="remote" name="remote" className="w-full p-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 appearance-none text-black">
-                <option value="">Remote Preferred</option>
+              <select id="remote" name="remote" className="w-full p-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 appearance-none text-black bg-gray-200">
+                <option value="" disabled selected className="text-gray-400">Remote Preferred</option>
                 <option value="yes">Yes</option>
                 <option value="no">No</option>
               </select>
             </div>
             <div className="relative">
-              <input type="number" id="experience" name="experience" min="0" placeholder="Years of Experience" className="w-full p-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 text-black placeholder-gray-400" />
+              <input type="number" id="experience" name="experience" min="0" placeholder="Years of Experience" className="w-full p-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 text-black placeholder-gray-400 bg-gray-200" />
             </div>
             <div>
               <label htmlFor="resume" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Resume</label>
@@ -218,6 +232,10 @@ export default function JobDetails() {
           </form>
         </div>
       </main>
+      {showPopup && <SubmissionPopup onClose={() => {
+        setShowPopup(false);
+        router.push('/');
+      }} />}
     </div>
   );
 }
