@@ -143,6 +143,7 @@ export default function JobDetails() {
         });
 
         try {
+          // Submit application to local storage/database
           const response = await fetch('/api/submit-application', {
             method: 'POST',
             headers: {
@@ -152,6 +153,8 @@ export default function JobDetails() {
           });
 
           if (response.ok) {
+            // If local submission is successful, submit to Greenhouse
+            await submitApplication(currentUser.userId);
             setShowPopup(true);
           } else {
             throw new Error('Failed to submit application');
@@ -164,6 +167,31 @@ export default function JobDetails() {
       reader.readAsDataURL(file);
     } else {
       alert('Please upload a resume file.');
+    }
+  };
+
+  // Add this function to your component
+  const submitApplication = async (candidateId: string) => {
+    try {
+      const response = await fetch('/api/post-candidate-application', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ candidateId }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to submit application to Greenhouse');
+      }
+
+      const result = await response.json();
+      console.log('Application submitted to Greenhouse:', result);
+    } catch (error) {
+      console.error('Error submitting application to Greenhouse:', error);
+      // You might want to handle this error differently, perhaps by showing a message to the user
+      // that their application was saved locally but couldn't be sent to Greenhouse
+      alert('Application saved locally but could not be sent to Greenhouse. Please contact support.');
     }
   };
 

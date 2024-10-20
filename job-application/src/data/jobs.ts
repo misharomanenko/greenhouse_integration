@@ -1,12 +1,5 @@
-// Export the JobListing type
-export interface JobListing {
-  id: string;
-  title: string;
-  company: string;
-  location: string;
-  type: string;
-  description: string;
-}
+
+import { JobListing } from '@/data/jobs';
 
 export const jobListings: JobListing[] = [
   {
