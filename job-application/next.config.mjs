@@ -9,6 +9,14 @@ const nextConfig = {
     });
     return config;
   },
+  async rewrites() {
+    return [
+      {
+        source: '/api/greenhouse-api/:path*',
+        destination: '/api/greenhouse-api/:path*',
+      },
+    ];
+  },
 };
 
 export default nextConfig;

@@ -24,10 +24,9 @@ const applicationsPath = path.join(process.cwd(), 'src', 'data', 'applications.j
 export const userApplications: UserApplication[] = [];
 
 export const addUserApplication = (application: UserApplication): void => {
-    const applications = JSON.parse(fs.readFileSync(applicationsPath, 'utf-8'));
-    applications.push(application);
-    fs.writeFileSync(applicationsPath, JSON.stringify(applications, null, 2));
-  };
+  const applications = [application]; // Create a new array with only the new application
+  fs.writeFileSync(applicationsPath, JSON.stringify(applications, null, 2));
+};
 
 export const getUserApplications = (userId: string): UserApplication[] => {
   const applications = JSON.parse(fs.readFileSync(applicationsPath, 'utf-8'));

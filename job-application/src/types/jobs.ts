@@ -6,4 +6,3 @@ export interface JobListing {
   type: string;
   description: string;
 }
-

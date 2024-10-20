@@ -50,6 +50,7 @@ export default function JobDetails() {
   const [dragActive, setDragActive] = useState(false);
   const [file, setFile] = useState<File | null>(null);
   const [showPopup, setShowPopup] = useState(false);
+  const [selectedOption, setSelectedOption] = useState('');
 
   useEffect(() => {
     if (!id) return;
@@ -120,7 +121,7 @@ export default function JobDetails() {
     const formData = new FormData(e.currentTarget);
     
     const application: UserApplication = {
-      user_id: currentUser.userId,
+      user_id: currentUser.id.toString(),
       job_id: parseInt(job.id),
       source_id: 7,
       initial_stage_id: 2708728,
@@ -154,7 +155,7 @@ export default function JobDetails() {
 
           if (response.ok) {
             // If local submission is successful, submit to Greenhouse
-            await submitApplication(currentUser.userId);
+            await submitApplication(currentUser.id.toString());
             setShowPopup(true);
           } else {
             throw new Error('Failed to submit application');
@@ -170,10 +171,9 @@ export default function JobDetails() {
     }
   };
 
-  // Add this function to your component
   const submitApplication = async (candidateId: string) => {
     try {
-      const response = await fetch('/api/post-candidate-application', {
+      const response = await fetch('/api/greenhouse-api/post-candidate-application', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -189,10 +189,12 @@ export default function JobDetails() {
       console.log('Application submitted to Greenhouse:', result);
     } catch (error) {
       console.error('Error submitting application to Greenhouse:', error);
-      // You might want to handle this error differently, perhaps by showing a message to the user
-      // that their application was saved locally but couldn't be sent to Greenhouse
       alert('Application saved locally but could not be sent to Greenhouse. Please contact support.');
     }
+  };
+
+  const handleSelectChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    setSelectedOption(event.target.value);
   };
 
   return (
@@ -233,8 +235,8 @@ export default function JobDetails() {
               <input type="text" id="compensation" name="compensation" placeholder="Desired Compensation" className="w-full p-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 text-black placeholder-gray-400 bg-gray-200" />
             </div>
             <div className="relative">
-              <select id="remote" name="remote" className="w-full p-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 appearance-none text-black bg-gray-200">
-                <option value="" disabled selected className="text-gray-400">Remote Preferred</option>
+              <select id="remote" name="remote" value={selectedOption} onChange={handleSelectChange} className="w-full p-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 appearance-none text-black bg-gray-200">
+                <option value="" disabled>Remote Preferred</option>
                 <option value="yes">Yes</option>
                 <option value="no">No</option>
               </select>

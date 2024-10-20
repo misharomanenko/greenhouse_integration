@@ -5,7 +5,7 @@ import { useEffect } from 'react';
 
 export default function App({ Component, pageProps }: AppProps) {
   useEffect(() => {
-    fetch('/api/greenhouse')
+    fetch('/api/greenhouse-api/get-job-listing')
       .then(response => response.json())
       .then(data => console.log(data))
       .catch(error => console.error('Error fetching job details:', error));
