@@ -1,11 +1,13 @@
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import localFont from 'next/font/local';
 import { FaBriefcase, FaMapMarkerAlt, FaClock, FaArrowLeft } from 'react-icons/fa';
 import { jobListings } from '@/data/jobs';
-import { addUserApplication, UserApplication } from '@/data/applications';
+import { addUserApplication } from '@/types/Application';
 import { currentUser } from '@/data/user';
+import { Job } from '@/types/job';
+import { UserApplication } from '@/types/UserApplication';
+import localFont from 'next/font/local';
 
 const geistSans = localFont({
     src: '../../../public/fonts/GeistVF.woff',
@@ -16,15 +18,6 @@ const geistMono = localFont({
     src: '../../../public/fonts/GeistMonoVF.woff',
     variable: '--font-geist-mono',
 });
-
-interface Job {
-  id: string;
-  title: string;
-  company: string;
-  location: string;
-  type: string;
-  description: string;
-}
 
 const SubmissionPopup = ({ onClose, message, isError }: { onClose: () => void, message: string, isError: boolean }) => (
   <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
@@ -123,7 +116,7 @@ export default function JobDetails() {
     
     const application: UserApplication = {
       user_id: currentUser.id.toString(),
-      job_id: parseInt(job.id),
+      job_id: parseInt(job.id.toString()),
       attachments: []
     };
 

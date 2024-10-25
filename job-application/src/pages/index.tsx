@@ -1,18 +1,9 @@
-import { useState } from 'react';
+import { useRouter } from 'next/router';
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import localFont from 'next/font/local';
-import { FaSearch, FaBriefcase, FaMapMarkerAlt, FaClock } from 'react-icons/fa';
+import { FaBriefcase, FaMapMarkerAlt, FaClock, FaArrowLeft, FaSearch } from 'react-icons/fa';
 import { jobListings } from '@/data/jobs';
-
-const geistSans = localFont({
-  src: '../../public/fonts/GeistVF.woff',
-  variable: '--font-geist-sans',
-});
-
-const geistMono = localFont({
-  src: '../../public/fonts/GeistMonoVF.woff',
-  variable: '--font-geist-mono',
-});
+import { currentUser } from '@/data/user';
 
 export default function Home() {
   const [searchTerm, setSearchTerm] = useState('');
@@ -23,7 +14,7 @@ export default function Home() {
   );
 
   return (
-    <div className={`${geistSans.variable} ${geistMono.variable} min-h-screen bg-gradient-to-br from-primary-50 to-primary-100 dark:from-neutral-900 dark:to-neutral-800 text-neutral-800 dark:text-neutral-200`}>
+    <div className="min-h-screen bg-gradient-to-br from-primary-50 to-primary-100 dark:from-neutral-900 dark:to-neutral-800 text-neutral-800 dark:text-neutral-200 flex items-center justify-center">
       <main className="container mx-auto px-4 py-12">
         <h1 className="text-5xl font-bold mb-12 text-center text-primary-600 dark:text-primary-400 drop-shadow-lg">Job Openings</h1>
         

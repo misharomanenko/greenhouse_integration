@@ -1,7 +1,7 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import fs from 'fs/promises';
 import path from 'path';
-import { UserApplication } from '@/data/applications';
+import { UserApplication } from '@/types/UserApplication';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method === 'POST') {

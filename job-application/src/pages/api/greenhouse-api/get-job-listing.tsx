@@ -3,7 +3,7 @@ import axios from 'axios';
 import fs from 'fs/promises';
 import path from 'path';
 import { jobListings } from '@/data/jobs';
-import { JobListing } from '@/types/jobs';
+import { JobListing } from '@/types/job';
 
 const API_KEY = 'f06b2b153e016f8e7c3632627af56b1d-7'; 
 // const API_KEY = process.env.GREENHOUSE_API_KEY?.toString();

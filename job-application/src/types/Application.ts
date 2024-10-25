@@ -1,17 +1,7 @@
-import { jobListings } from './jobs';
+import { jobListings } from '../data/jobs';
 import fs from 'fs';
 import path from 'path';
-
-export interface UserApplication {
-  job_id: number;
-  user_id: string;
-  attachments: {
-    filename: string;
-    type: string;
-    content: string;
-    content_type: string;
-  }[];
-}
+import { UserApplication } from '@/types/UserApplication';
 
 const applicationsPath = path.join(process.cwd(), 'src', 'data', 'applications.json');
 
