@@ -1,4 +1,4 @@
-import { jobListings } from '../data/jobs';
+import { jobListings } from './jobs';
 import fs from 'fs';
 import path from 'path';
 import { UserApplication } from '@/types/UserApplication';
