@@ -3,14 +3,15 @@ import axios from 'axios';
 import fs from 'fs/promises';
 import path from 'path';
 
-// const API_URL = `https://harvest.greenhouse.io/v1/candidates/${process.env.CANDIDATE_ID}/applications`;
-const API_URL = 'https://harvest.greenhouse.io/v1/candidates/34555007007/applications';
+// const API_URL = 'https://harvest.greenhouse.io/v1/candidates/34555007007/applications';
 
-// const API_KEY = process.env.GREENHOUSE_API_KEY?.toString();
-const API_KEY = 'f06b2b153e016f8e7c3632627af56b1d-7'; 
+// const API_KEY = 'f06b2b153e016f8e7c3632627af56b1d-7'; 
 
-// const ON_BEHALF_OF = process.env.GREENHOUSE_USER_ID?.toString();
-const ON_BEHALF_OF = '4280249007'; 
+// const ON_BEHALF_OF = '4280249007'; 
+
+const API_URL = `https://harvest.greenhouse.io/v1/candidates/${process.env.CANDIDATE_ID}/applications`;
+const API_KEY = process.env.GREENHOUSE_API_KEY || '';
+const ON_BEHALF_OF = process.env.GREENHOUSE_USER_ID || '';
 
 const ENABLE_POST_REQUEST = process.env.ENABLE_POST_REQUEST === 'true';
 

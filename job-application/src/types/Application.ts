@@ -1,18 +1,33 @@
 import { jobListings } from './jobs';
-import fs from 'fs';
-import path from 'path';
 import { UserApplication } from '@/types/UserApplication';
-
-const applicationsPath = path.join(process.cwd(), 'src', 'data', 'applications.json');
 
 export const userApplications: UserApplication[] = [];
 
-export const addUserApplication = (application: UserApplication): void => {
-  const applications = [application]; // Create a new array with only the new application
-  fs.writeFileSync(applicationsPath, JSON.stringify(applications, null, 2));
+export const addUserApplication = async (application: UserApplication): Promise<void> => {
+  if (typeof window === 'undefined') {
+    // Server-side code
+    const fs = await import('fs/promises');
+    const path = await import('path');
+    const applicationsPath = path.default.join(process.cwd(), 'src', 'data', 'applications.json');
+    const applications = [application];
+    await fs.default.writeFile(applicationsPath, JSON.stringify(applications, null, 2));
+  } else {
+    // Client-side code
+    console.log('Application submitted:', application);
+  }
 };
 
-export const getUserApplications = (userId: string): UserApplication[] => {
-  const applications = JSON.parse(fs.readFileSync(applicationsPath, 'utf-8'));
-  return applications.filter((app: UserApplication) => app.user_id === userId);
+export const getUserApplications = async (userId: string): Promise<UserApplication[]> => {
+  if (typeof window === 'undefined') {
+    // Server-side code
+    const fs = await import('fs/promises');
+    const path = await import('path');
+    const applicationsPath = path.default.join(process.cwd(), 'src', 'data', 'applications.json');
+    const fileContent = await fs.default.readFile(applicationsPath, 'utf-8');
+    const applications = JSON.parse(fileContent);
+    return applications.filter((app: UserApplication) => app.user_id === userId);
+  } else {
+    // Client-side code
+    return [];
+  }
 };

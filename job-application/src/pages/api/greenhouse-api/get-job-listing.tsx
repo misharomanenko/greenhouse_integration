@@ -5,9 +5,13 @@ import path from 'path';
 import { jobListings } from '@/types/jobs';
 import { JobListing } from '@/types/job';
 
-const API_KEY = 'f06b2b153e016f8e7c3632627af56b1d-7'; 
+const API_KEY = process.env.GREENHOUSE_API_KEY || '';
+const JOB_ID = process.env.GREENHOUSE_JOB_ID || '';
+
+// const API_KEY = 'f06b2b153e016f8e7c3632627af56b1d-7'; 
 // const API_KEY = process.env.GREENHOUSE_API_KEY?.toString();
-const JOB_ID = '4285367007';
+
+// const JOB_ID = '4285367007';
 // const JOB_ID = process.env.GREENHOUSE_JOB_ID?.toString();
 
 const GREENHOUSE_API_URL = `https://harvest.greenhouse.io/v1/jobs/${JOB_ID}`;

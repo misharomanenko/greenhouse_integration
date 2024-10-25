@@ -92,7 +92,6 @@ export default function JobDetails() {
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    e.preventDefault();
     if (e.target.files && e.target.files[0]) {
       setFile(e.target.files[0]);
     }
@@ -122,7 +121,6 @@ export default function JobDetails() {
         });
 
         try {
-          // Submit application to local storage/database
           const response = await fetch('/api/submit-application', {
             method: 'POST',
             headers: {
@@ -131,52 +129,27 @@ export default function JobDetails() {
             body: JSON.stringify(application),
           });
 
+          const result = await response.json();
+
           if (response.ok) {
-            // If local submission is successful, submit to Greenhouse
-            await submitApplication(currentUser.id.toString());
             setShowPopup(true);
+            setPopupMessage('Application submitted successfully!');
+          } else if (response.status === 409) {
+            setShowPopup(true);
+            setPopupMessage('You have already submitted an application for this job.');
           } else {
-            throw new Error('Failed to submit application');
+            throw new Error(result.error || 'Failed to submit application');
           }
         } catch (error) {
           console.error('Error submitting application:', error);
-          alert('Failed to submit application. Please try again.');
+          setShowPopup(true);
+          setPopupMessage('An error occurred while submitting your application. Please try again later.');
         }
       };
       reader.readAsDataURL(file);
     } else {
-      alert('Please upload a resume file.');
-    }
-  };
-
-  const submitApplication = async (candidateId: string) => {
-    try {
-      const response = await fetch('/api/greenhouse-api/post-candidate-application', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ candidateId }),
-      });
-
-      const result = await response.json();
-
-      if (!response.ok) {
-        if (response.status === 409) {
-          setShowPopup(true);
-          setPopupMessage('You have already submitted an application for this job.');
-        } else {
-          throw new Error(result.error || 'Failed to submit application to Greenhouse');
-        }
-      } else {
-        console.log('Application submitted to Greenhouse:', result);
-        setShowPopup(true);
-        setPopupMessage('Application submitted successfully!');
-      }
-    } catch (error) {
-      console.error('Error submitting application to Greenhouse:', error);
       setShowPopup(true);
-      setPopupMessage('An error occurred while submitting your application. Please try again later.');
+      setPopupMessage('Please upload a resume before submitting your application.');
     }
   };
 
@@ -254,20 +227,39 @@ export default function JobDetails() {
               placeholder="Years of Experience" 
               className={`w-full p-3 rounded-md ${theme.input.border.light} ${theme.input.border.dark} ${theme.input.background.light} ${theme.input.background.dark} ${theme.input.text.light} ${theme.input.text.dark} ${theme.input.placeholder.light} ${theme.input.placeholder.dark} ${theme.input.focus} ${theme.input.shadow} ${theme.input.hover}`} 
             />
-            <div 
-              className={`mt-4 border-2 border-dashed rounded-md p-6 ${dragActive ? 'border-primary-400 bg-primary-50 dark:bg-primary-900' : 'border-neutral-300 dark:border-neutral-600'}`}
-              onDragEnter={handleDrag}
-              onDragLeave={handleDrag}
-              onDragOver={handleDrag}
-              onDrop={handleDrop}
-            >
-              <div className="text-center">
-                <FaUpload className="mx-auto h-12 w-12 text-neutral-400" />
-                <p className="mt-2 text-sm text-neutral-600 dark:text-neutral-400">Drag and drop your resume here, or click to select a file</p>
-                <input id="file-upload" name="file-upload" type="file" className="sr-only" onChange={handleChange} />
+            <div className="mt-4">
+              <label htmlFor="file-upload" className="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-2">
+                Upload Resume
+              </label>
+              <div 
+                className={`w-full p-6 border-2 border-dashed rounded-md flex flex-col items-center justify-center cursor-pointer ${
+                  dragActive ? 'border-primary-500' : 'border-neutral-300 dark:border-neutral-600'
+                } ${theme.input.background.light} ${theme.input.background.dark} ${theme.input.text.light} ${theme.input.text.dark} hover:border-primary-500 transition-colors duration-300`}
+                onDragEnter={handleDrag}
+                onDragLeave={handleDrag}
+                onDragOver={handleDrag}
+                onDrop={handleDrop}
+                onClick={() => document.getElementById('file-upload')?.click()}
+              >
+                <input
+                  id="file-upload"
+                  name="file-upload"
+                  type="file"
+                  accept=".pdf,.doc,.docx"
+                  onChange={handleChange}
+                  className="hidden"
+                />
+                <FaUpload className="text-4xl mb-2 text-neutral-400" />
+                <p className="text-sm text-center">
+                  {file ? file.name : 'Drag and drop your resume here, or click to select a file'}
+                </p>
+                {file && (
+                  <p className="text-xs text-primary-600 dark:text-primary-400 mt-2">
+                    File selected: {file.name}
+                  </p>
+                )}
               </div>
             </div>
-            {file && <p className="mt-2 text-sm text-neutral-600 dark:text-neutral-400">File selected: {file.name}</p>}
             <button type="submit" className="w-full bg-primary-600 hover:bg-primary-700 text-white font-bold py-3 px-6 rounded-full transition duration-300 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-opacity-50">
               Submit Application
             </button>
