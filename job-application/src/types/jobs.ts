@@ -1,4 +1,3 @@
-
 import { JobListing } from '@/types/job';
 
 export const jobListings: JobListing[] = [
