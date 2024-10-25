@@ -12,12 +12,18 @@ const geistMono = localFont({
   variable: '--font-geist-mono',
 });
 
-export default function Layout({ children }: { children: React.ReactNode }) {
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode
+}) {
   return (
-    <ThemeProvider attribute="class">
-      <div className={`${geistSans.variable} ${geistMono.variable} min-h-screen ${theme.background.light} ${theme.background.dark} ${theme.text.body.light} ${theme.text.body.dark}`}>
-        {children}
-      </div>
-    </ThemeProvider>
+    <html lang="en" suppressHydrationWarning>
+      <body className={`${geistSans.variable} ${geistMono.variable} min-h-screen ${theme.background.light} ${theme.background.dark} ${theme.text.body.light} ${theme.text.body.dark}`}>
+        <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+          {children}
+        </ThemeProvider>
+      </body>
+    </html>
   );
 }
