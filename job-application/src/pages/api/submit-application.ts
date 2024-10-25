@@ -16,7 +16,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       try {
         const fileContent = await fs.readFile(applicationsPath, 'utf-8');
         applications = JSON.parse(fileContent);
-      } catch (error) {
+      } catch {
         // If the file doesn't exist or is empty, we'll start with an empty array
       }
 

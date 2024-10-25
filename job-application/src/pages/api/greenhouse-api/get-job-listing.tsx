@@ -4,6 +4,12 @@ import fs from 'fs/promises';
 import path from 'path';
 import { JobListing, jobListings } from '@/types/Jobs';
 
+interface JobData {
+  id: number;
+  name: string;
+  offices: { name: string }[];
+}
+
 const API_KEY = process.env.GREENHOUSE_API_KEY || '';
 const JOB_ID = process.env.GREENHOUSE_JOB_ID || '';
 
@@ -39,7 +45,7 @@ const fetchJobDetails = async () => {
   }
 }
 
-const updateJobListings = async (jobData: any) => {
+const updateJobListings = async (jobData: JobData) => {
   const newJob: JobListing = {
     id: jobData.id.toString(), // Convert id to string
     title: jobData.name,
