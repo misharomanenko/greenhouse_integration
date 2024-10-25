@@ -209,14 +209,14 @@ export default function JobDetails() {
                 id="name" 
                 name="name" 
                 placeholder="Name" 
-                className={`w-full p-3 rounded-md ${theme.input.border.light} ${theme.input.border.dark} ${theme.input.background.light} ${theme.input.background.dark} ${theme.input.text.light} ${theme.input.text.dark} ${theme.input.placeholder.light} ${theme.input.placeholder.dark} ${theme.input.focus}`} 
+                className={`w-full p-3 rounded-md ${theme.input.border.light} ${theme.input.border.dark} ${theme.input.background.light} ${theme.input.background.dark} ${theme.input.text.light} ${theme.input.text.dark} ${theme.input.placeholder.light} ${theme.input.placeholder.dark} ${theme.input.focus} ${theme.input.shadow} ${theme.input.hover}`} 
               />
               <input 
                 type="email" 
                 id="email" 
                 name="email" 
                 placeholder="Email" 
-                className={`w-full p-3 rounded-md ${theme.input.border.light} ${theme.input.border.dark} ${theme.input.background.light} ${theme.input.background.dark} ${theme.input.text.light} ${theme.input.text.dark} ${theme.input.placeholder.light} ${theme.input.placeholder.dark} ${theme.input.focus}`} 
+                className={`w-full p-3 rounded-md ${theme.input.border.light} ${theme.input.border.dark} ${theme.input.background.light} ${theme.input.background.dark} ${theme.input.text.light} ${theme.input.text.dark} ${theme.input.placeholder.light} ${theme.input.placeholder.dark} ${theme.input.focus} ${theme.input.shadow} ${theme.input.hover}`} 
               />
             </div>
             <input 
@@ -224,7 +224,7 @@ export default function JobDetails() {
               id="linkedin" 
               name="linkedin" 
               placeholder="LinkedIn Profile" 
-              className={`w-full p-3 rounded-md ${theme.input.border.light} ${theme.input.border.dark} ${theme.input.background.light} ${theme.input.background.dark} ${theme.input.text.light} ${theme.input.text.dark} ${theme.input.placeholder.light} ${theme.input.placeholder.dark} ${theme.input.focus}`} 
+              className={`w-full p-3 rounded-md ${theme.input.border.light} ${theme.input.border.dark} ${theme.input.background.light} ${theme.input.background.dark} ${theme.input.text.light} ${theme.input.text.dark} ${theme.input.placeholder.light} ${theme.input.placeholder.dark} ${theme.input.focus} ${theme.input.shadow} ${theme.input.hover}`} 
             />
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <input 
@@ -232,14 +232,14 @@ export default function JobDetails() {
                 id="compensation" 
                 name="compensation" 
                 placeholder="Desired Compensation" 
-                className={`w-full p-3 rounded-md ${theme.input.border.light} ${theme.input.border.dark} ${theme.input.background.light} ${theme.input.background.dark} ${theme.input.text.light} ${theme.input.text.dark} ${theme.input.placeholder.light} ${theme.input.placeholder.dark} ${theme.input.focus}`} 
+                className={`w-full p-3 rounded-md ${theme.input.border.light} ${theme.input.border.dark} ${theme.input.background.light} ${theme.input.background.dark} ${theme.input.text.light} ${theme.input.text.dark} ${theme.input.placeholder.light} ${theme.input.placeholder.dark} ${theme.input.focus} ${theme.input.shadow} ${theme.input.hover}`} 
               />
               <select 
                 id="remote" 
                 name="remote" 
                 value={selectedOption} 
                 onChange={handleSelectChange} 
-                className={`w-full p-3 rounded-md ${theme.input.border.light} ${theme.input.border.dark} ${theme.input.background.light} ${theme.input.background.dark} ${theme.input.text.light} ${theme.input.text.dark} ${theme.input.focus}`}
+                className={`w-full p-3 rounded-md ${theme.input.border.light} ${theme.input.border.dark} ${theme.input.background.light} ${theme.input.background.dark} ${theme.input.text.light} ${theme.input.text.dark} ${theme.input.focus} ${theme.input.shadow} ${theme.input.hover}`}
               >
                 <option value="" disabled>Remote Preferred</option>
                 <option value="yes">Yes</option>
@@ -252,7 +252,7 @@ export default function JobDetails() {
               name="experience" 
               min="0" 
               placeholder="Years of Experience" 
-              className={`w-full p-3 rounded-md ${theme.input.border.light} ${theme.input.border.dark} ${theme.input.background.light} ${theme.input.background.dark} ${theme.input.text.light} ${theme.input.text.dark} ${theme.input.placeholder.light} ${theme.input.placeholder.dark} ${theme.input.focus}`} 
+              className={`w-full p-3 rounded-md ${theme.input.border.light} ${theme.input.border.dark} ${theme.input.background.light} ${theme.input.background.dark} ${theme.input.text.light} ${theme.input.text.dark} ${theme.input.placeholder.light} ${theme.input.placeholder.dark} ${theme.input.focus} ${theme.input.shadow} ${theme.input.hover}`} 
             />
             <div 
               className={`mt-4 border-2 border-dashed rounded-md p-6 ${dragActive ? 'border-primary-400 bg-primary-50 dark:bg-primary-900' : 'border-neutral-300 dark:border-neutral-600'}`}

@@ -1,19 +1,62 @@
 :root {
-  --color-primary-50: #EBF5FF;
-  --color-primary-100: #E1EFFE;
-  --color-primary-600: #1C64F2;
-  --color-primary-700: #1A56DB;
-  --color-neutral-200: #E5E7EB;
-  --color-neutral-800: #1F2937;
-  --color-neutral-900: #111827;
+  /* Cool blue primary colors */
+  --color-primary-50: #E3F2FD;
+  --color-primary-100: #BBDEFB;
+  --color-primary-200: #90CAF9;
+  --color-primary-300: #64B5F6;
+  --color-primary-400: #42A5F5;
+  --color-primary-500: #2196F3;
+  --color-primary-600: #1E88E5;
+  --color-primary-700: #1976D2;
+  --color-primary-800: #1565C0;
+  --color-primary-900: #0D47A1;
+  
+  /* Teal accent colors */
+  --color-accent-400: #26A69A;
+  --color-accent-500: #00897B;
+  
+  /* Modern neutral colors */
+  --color-neutral-50: #FAFAFA;
+  --color-neutral-100: #F5F5F5;
+  --color-neutral-200: #EEEEEE;
+  --color-neutral-300: #E0E0E0;
+  --color-neutral-400: #BDBDBD;
+  --color-neutral-500: #9E9E9E;
+  --color-neutral-600: #757575;
+  --color-neutral-700: #616161;
+  --color-neutral-800: #424242;
+  --color-neutral-900: #212121;
 }
 
 .dark {
-  --color-primary-50: #111827;
-  --color-primary-100: #1F2937;
-  --color-primary-600: #3F83F8;
-  --color-primary-700: #76A9FA;
-  --color-neutral-200: #4B5563;
-  --color-neutral-800: #F3F4F6;
-  --color-neutral-900: #F9FAFB;
+  /* Darker shades for dark mode */
+  --color-primary-50: #0D47A1;
+  --color-primary-100: #1565C0;
+  --color-primary-200: #1976D2;
+  --color-primary-300: #1E88E5;
+  --color-primary-400: #2196F3;
+  --color-primary-500: #42A5F5;
+  --color-primary-600: #64B5F6;
+  --color-primary-700: #90CAF9;
+  --color-primary-800: #BBDEFB;
+  --color-primary-900: #E3F2FD;
+  
+  /* Lighter teal accents for dark mode */
+  --color-accent-400: #4DB6AC;
+  --color-accent-500: #26A69A;
+  
+  /* Inverted neutral colors for dark mode */
+  --color-neutral-50: #212121;
+  --color-neutral-100: #424242;
+  --color-neutral-200: #616161;
+  --color-neutral-300: #757575;
+  --color-neutral-400: #9E9E9E;
+  --color-neutral-500: #BDBDBD;
+  --color-neutral-600: #E0E0E0;
+  --color-neutral-700: #EEEEEE;
+  --color-neutral-800: #F5F5F5;
+  --color-neutral-900: #FAFAFA;
 }
+
+
+

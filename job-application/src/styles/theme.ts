@@ -23,13 +23,15 @@ export const theme = {
   },
   button: {
     primary: 'bg-primary-600 hover:bg-primary-700 text-white',
-    secondary: 'bg-secondary-500 hover:bg-secondary-600 text-white',
+    secondary: 'bg-accent-500 hover:bg-accent-400 text-white',
   },
   input: {
     background: {
       light: 'bg-primary-50',
       dark: 'dark:bg-neutral-700',
     },
+    shadow: 'shadow-sm',
+    hover: 'hover:bg-primary-100 dark:hover:bg-neutral-600',
     text: {
       light: 'text-neutral-800',
       dark: 'dark:text-neutral-200',
@@ -45,4 +47,3 @@ export const theme = {
     focus: 'focus:ring-2 focus:ring-primary-500',
   },
 };
-
