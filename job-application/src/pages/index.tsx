@@ -2,6 +2,9 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { FaBriefcase, FaMapMarkerAlt, FaClock, FaSearch } from 'react-icons/fa';
 import { jobListings } from '@/data/jobListings';
+import { IconBaseProps } from 'react-icons';
+
+type IconProps = IconBaseProps & { className?: string; 'aria-hidden'?: string };
 
 export default function Home() {
   const [searchTerm, setSearchTerm] = useState('');
@@ -25,7 +28,11 @@ export default function Home() {
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
             />
-            <FaSearch className="absolute left-5 top-1/2 transform -translate-y-1/2 text-primary-400 text-xl" />
+            <FaSearch 
+              className="absolute left-5 top-1/2 transform -translate-y-1/2 text-current text-xl" 
+              aria-hidden="true" 
+              {...({} as IconProps)}
+            />
           </div>
         </div>
 
@@ -35,13 +42,13 @@ export default function Home() {
               <div className="bg-white dark:bg-neutral-800 rounded-xl shadow-xl hover:shadow-2xl transition-shadow duration-300 p-8 border border-primary-200 dark:border-primary-700">
                 <h2 className="text-2xl font-semibold mb-4 text-primary-600 dark:text-primary-400">{job.title}</h2>
                 <p className="text-neutral-600 dark:text-neutral-300 mb-4 flex items-center text-lg">
-                  <FaBriefcase className="mr-3 text-primary-400" /> {job.company}
+                  <span className="mr-3 text-primary-400"><FaBriefcase size="1em" /></span> {job.company}
                 </p>
                 <p className="text-neutral-500 dark:text-neutral-400 text-base flex items-center mb-6">
-                  <FaMapMarkerAlt className="mr-3 text-primary-400" /> {job.location}
+                  <span className="mr-3 text-primary-400"><FaMapMarkerAlt size="1em" /></span> {job.location}
                 </p>
                 <div className="flex items-center">
-                  <FaClock className="text-primary-400 mr-3" />
+                  <FaClock className="text-primary-400 text-base mr-3" aria-hidden="true" {...({} as IconProps)} />
                   <span className="bg-secondary-100 dark:bg-secondary-900 text-secondary-800 dark:text-secondary-200 text-sm px-4 py-2 rounded-full">
                     {job.type}
                   </span>

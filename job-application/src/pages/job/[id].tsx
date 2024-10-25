@@ -158,15 +158,15 @@ export default function JobDetails() {
     <div className="min-h-screen bg-gradient-to-br from-neutral-50 to-neutral-100 dark:from-neutral-900 dark:to-neutral-800 text-neutral-800 dark:text-neutral-200 pt-20">
       <main className="container mx-auto px-4 py-8 max-w-3xl">
         <Link href="/" className="inline-flex items-center text-primary-600 dark:text-primary-400 mb-8 hover:underline transition duration-300">
-          <FaArrowLeft className="mr-2" /> Back to listings
+          <span className="mr-2"><FaArrowLeft size={16} /></span> Back to listings
         </Link>
         
         <div className="bg-white dark:bg-neutral-800 rounded-lg shadow-xl p-8 border border-neutral-200 dark:border-neutral-700">
           <h1 className="text-4xl font-bold mb-4 text-primary-600 dark:text-primary-400">{job.title}</h1>
           <div className="flex flex-wrap items-center text-neutral-600 dark:text-neutral-400 mb-6 space-x-6">
-            <p className="flex items-center"><FaBriefcase className="mr-2" /> {job.company}</p>
-            <p className="flex items-center"><FaMapMarkerAlt className="mr-2" /> {job.location}</p>
-            <p className="flex items-center"><FaClock className="mr-2" /> {job.type}</p>
+            <p className="flex items-center"><span className="mr-2"><FaBriefcase size={16} /></span> {job.company}</p>
+            <p className="flex items-center"><span className="mr-2"><FaMapMarkerAlt size={16} /></span> {job.location}</p>
+            <p className="flex items-center"><span className="mr-2"><FaClock size={16} /></span> {job.type}</p>
           </div>
           
           <h2 className={`text-2xl font-semibold mb-4 ${theme.text.primary.light} ${theme.text.primary.dark}`}>Description</h2>
@@ -246,7 +246,7 @@ export default function JobDetails() {
                   onChange={handleChange}
                   className="hidden"
                 />
-                <FaUpload className="text-4xl mb-2 text-neutral-400" />
+                <span className="mb-2 text-neutral-400"><FaUpload size={32} /></span>
                 <p className="text-sm text-center">
                   {file ? file.name : 'Drag and drop your resume here, or click to select a file'}
                 </p>
