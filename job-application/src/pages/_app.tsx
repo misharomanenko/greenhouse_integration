@@ -1,7 +1,9 @@
 import "@/styles/globals.css";
 import type { AppProps } from "next/app";
 import Header from "@/components/Header";
+import Layout from "@/components/Layout";
 import { useEffect } from 'react';
+import { ThemeProvider } from 'next-themes';
 
 export default function App({ Component, pageProps }: AppProps) {
   useEffect(() => {
@@ -12,11 +14,14 @@ export default function App({ Component, pageProps }: AppProps) {
   }, []);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-primary-50 to-primary-100 dark:from-neutral-900 dark:to-neutral-800">
-      <Header />
-      <div className="pt-16"> {/* Add padding-top to account for fixed header */}
-        <Component {...pageProps} />
-      </div>
-    </div>
+    <ThemeProvider attribute="class">
+      <Layout>
+        <Header />
+        <div className="pt-10">
+          <Component {...pageProps} />
+        </div>
+      </Layout>
+    </ThemeProvider>
   );
 }
+

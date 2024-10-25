@@ -1,36 +1,19 @@
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import localFont from 'next/font/local';
-import { FaBriefcase, FaMapMarkerAlt, FaClock, FaArrowLeft } from 'react-icons/fa';
-import { jobListings } from '@/data/jobs';
-import { addUserApplication, UserApplication } from '@/data/applications';
-import { currentUser } from '@/data/user';
-
-const geistSans = localFont({
-    src: '../../../public/fonts/GeistVF.woff',
-    variable: '--font-geist-sans',
-});
-
-const geistMono = localFont({
-    src: '../../../public/fonts/GeistMonoVF.woff',
-    variable: '--font-geist-mono',
-});
-
-interface Job {
-  id: string;
-  title: string;
-  company: string;
-  location: string;
-  type: string;
-  description: string;
-}
+import { FaBriefcase, FaMapMarkerAlt, FaClock, FaArrowLeft, FaUpload } from 'react-icons/fa';
+import { jobListings } from '@/types/jobs';
+import { addUserApplication } from '@/types/Application';
+import { currentUser } from '@/types/user';
+import { Job } from '@/types/job';
+import { UserApplication } from '@/types/UserApplication';
+import { theme } from '@/styles/theme';
 
 const SubmissionPopup = ({ onClose, message, isError }: { onClose: () => void, message: string, isError: boolean }) => (
   <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
     <div className="bg-white dark:bg-neutral-800 rounded-lg p-8 max-w-md w-full shadow-xl transform transition-all duration-300 scale-100">
       <h2 className="text-2xl font-bold mb-4 text-primary-600 dark:text-primary-400">Application Status</h2>
-      <p className="text-gray-700 dark:text-gray-300 mb-6">{message}</p>
+      <p className="text-neutral-700 dark:text-neutral-300 mb-6">{message}</p>
       <button 
         onClick={onClose}
         className="w-full bg-primary-600 hover:bg-primary-700 text-white font-bold py-3 px-6 rounded-full transition duration-300 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-opacity-50"
@@ -109,7 +92,6 @@ export default function JobDetails() {
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    e.preventDefault();
     if (e.target.files && e.target.files[0]) {
       setFile(e.target.files[0]);
     }
@@ -123,7 +105,7 @@ export default function JobDetails() {
     
     const application: UserApplication = {
       user_id: currentUser.id.toString(),
-      job_id: parseInt(job.id),
+      job_id: parseInt(job.id.toString()),
       attachments: []
     };
 
@@ -139,7 +121,6 @@ export default function JobDetails() {
         });
 
         try {
-          // Submit application to local storage/database
           const response = await fetch('/api/submit-application', {
             method: 'POST',
             headers: {
@@ -148,52 +129,27 @@ export default function JobDetails() {
             body: JSON.stringify(application),
           });
 
+          const result = await response.json();
+
           if (response.ok) {
-            // If local submission is successful, submit to Greenhouse
-            await submitApplication(currentUser.id.toString());
             setShowPopup(true);
+            setPopupMessage('Application submitted successfully!');
+          } else if (response.status === 409) {
+            setShowPopup(true);
+            setPopupMessage('You have already submitted an application for this job.');
           } else {
-            throw new Error('Failed to submit application');
+            throw new Error(result.error || 'Failed to submit application');
           }
         } catch (error) {
           console.error('Error submitting application:', error);
-          alert('Failed to submit application. Please try again.');
+          setShowPopup(true);
+          setPopupMessage('An error occurred while submitting your application. Please try again later.');
         }
       };
       reader.readAsDataURL(file);
     } else {
-      alert('Please upload a resume file.');
-    }
-  };
-
-  const submitApplication = async (candidateId: string) => {
-    try {
-      const response = await fetch('/api/greenhouse-api/post-candidate-application', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ candidateId }),
-      });
-
-      const result = await response.json();
-
-      if (!response.ok) {
-        if (response.status === 409) {
-          setShowPopup(true);
-          setPopupMessage('You have already submitted an application for this job.');
-        } else {
-          throw new Error(result.error || 'Failed to submit application to Greenhouse');
-        }
-      } else {
-        console.log('Application submitted to Greenhouse:', result);
-        setShowPopup(true);
-        setPopupMessage('Application submitted successfully!');
-      }
-    } catch (error) {
-      console.error('Error submitting application to Greenhouse:', error);
       setShowPopup(true);
-      setPopupMessage('An error occurred while submitting your application. Please try again later.');
+      setPopupMessage('Please upload a resume before submitting your application.');
     }
   };
 
@@ -202,77 +158,109 @@ export default function JobDetails() {
   };
 
   return (
-    <div className={`${geistSans.variable} ${geistMono.variable} min-h-screen bg-gradient-to-br from-primary-50 to-primary-100 dark:from-neutral-900 dark:to-neutral-800 text-neutral-800 dark:text-neutral-200 flex items-center justify-center`}>
-      <main className="container mx-auto px-4 py-12 max-w-3xl">
-        <div className="bg-white dark:bg-neutral-800 rounded-lg shadow-xl p-8 border border-gray-200 dark:border-gray-700">
-          <Link href="/" className="inline-flex items-center text-primary-600 dark:text-primary-400 mb-8 hover:underline transition duration-300">
-            <FaArrowLeft className="mr-2" /> Back to listings
-          </Link>
-          
-          <h1 className="text-4xl font-bold mb-4 text-white dark:text-white text-center">{job.title}</h1>
-          <div className="flex flex-wrap justify-center items-center text-gray-600 dark:text-gray-300 mb-6">
-            <p className="mr-6 mb-2 flex items-center">
-              <FaBriefcase className="mr-2 text-gray-400" /> {job.company}
-            </p>
-            <p className="mr-6 mb-2 flex items-center">
-              <FaMapMarkerAlt className="mr-2 text-gray-400" /> {job.location}
-            </p>
-            <p className="flex items-center">
-              <FaClock className="mr-2 text-gray-400" /> {job.type}
-            </p>
+    <div className="min-h-screen bg-gradient-to-br from-neutral-50 to-neutral-100 dark:from-neutral-900 dark:to-neutral-800 text-neutral-800 dark:text-neutral-200 pt-20">
+      <main className="container mx-auto px-4 py-8 max-w-3xl">
+        <Link href="/" className="inline-flex items-center text-primary-600 dark:text-primary-400 mb-8 hover:underline transition duration-300">
+          <FaArrowLeft className="mr-2" /> Back to listings
+        </Link>
+        
+        <div className="bg-white dark:bg-neutral-800 rounded-lg shadow-xl p-8 border border-neutral-200 dark:border-neutral-700">
+          <h1 className="text-4xl font-bold mb-4 text-primary-600 dark:text-primary-400">{job.title}</h1>
+          <div className="flex flex-wrap items-center text-neutral-600 dark:text-neutral-400 mb-6 space-x-6">
+            <p className="flex items-center"><FaBriefcase className="mr-2" /> {job.company}</p>
+            <p className="flex items-center"><FaMapMarkerAlt className="mr-2" /> {job.location}</p>
+            <p className="flex items-center"><FaClock className="mr-2" /> {job.type}</p>
           </div>
           
-          <h2 className="font-semibold mb-4 text-gray-800 dark:text-gray-200 inline-block mr-2">Description:</h2>
-          <p className="text-gray-700 dark:text-gray-300 inline">{job.description}</p>
+          <h2 className={`text-2xl font-semibold mb-4 ${theme.text.primary.light} ${theme.text.primary.dark}`}>Description</h2>
+          <p className={`${theme.text.body.light} ${theme.text.body.dark} mb-8`}>{job.description}</p>
           
-          <form className="space-y-8" onSubmit={handleSubmit}>
-            <div className="relative">
-              <input type="text" id="name" name="name" placeholder="Name" className="w-full p-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 text-black placeholder-gray-400 bg-gray-200" />
+          <form onSubmit={handleSubmit} className="space-y-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <input 
+                type="text" 
+                id="name" 
+                name="name" 
+                placeholder="Name" 
+                className={`w-full p-3 rounded-md ${theme.input.border.light} ${theme.input.border.dark} ${theme.input.background.light} ${theme.input.background.dark} ${theme.input.text.light} ${theme.input.text.dark} ${theme.input.placeholder.light} ${theme.input.placeholder.dark} ${theme.input.focus} ${theme.input.shadow} ${theme.input.hover}`} 
+              />
+              <input 
+                type="email" 
+                id="email" 
+                name="email" 
+                placeholder="Email" 
+                className={`w-full p-3 rounded-md ${theme.input.border.light} ${theme.input.border.dark} ${theme.input.background.light} ${theme.input.background.dark} ${theme.input.text.light} ${theme.input.text.dark} ${theme.input.placeholder.light} ${theme.input.placeholder.dark} ${theme.input.focus} ${theme.input.shadow} ${theme.input.hover}`} 
+              />
             </div>
-            <div className="relative">
-              <input type="email" id="email" name="email" placeholder="Email" className="w-full p-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 text-black placeholder-gray-400 bg-gray-200" />
-            </div>
-            <div className="relative">
-              <input type="url" id="linkedin" name="linkedin" placeholder="LinkedIn Profile" className="w-full p-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 text-black placeholder-gray-400 bg-gray-200" />
-            </div>
-            <div className="relative">
-              <input type="text" id="compensation" name="compensation" placeholder="Desired Compensation" className="w-full p-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 text-black placeholder-gray-400 bg-gray-200" />
-            </div>
-            <div className="relative">
-              <select id="remote" name="remote" value={selectedOption} onChange={handleSelectChange} className="w-full p-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 appearance-none text-black bg-gray-200">
+            <input 
+              type="url" 
+              id="linkedin" 
+              name="linkedin" 
+              placeholder="LinkedIn Profile" 
+              className={`w-full p-3 rounded-md ${theme.input.border.light} ${theme.input.border.dark} ${theme.input.background.light} ${theme.input.background.dark} ${theme.input.text.light} ${theme.input.text.dark} ${theme.input.placeholder.light} ${theme.input.placeholder.dark} ${theme.input.focus} ${theme.input.shadow} ${theme.input.hover}`} 
+            />
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <input 
+                type="text" 
+                id="compensation" 
+                name="compensation" 
+                placeholder="Desired Compensation" 
+                className={`w-full p-3 rounded-md ${theme.input.border.light} ${theme.input.border.dark} ${theme.input.background.light} ${theme.input.background.dark} ${theme.input.text.light} ${theme.input.text.dark} ${theme.input.placeholder.light} ${theme.input.placeholder.dark} ${theme.input.focus} ${theme.input.shadow} ${theme.input.hover}`} 
+              />
+              <select 
+                id="remote" 
+                name="remote" 
+                value={selectedOption} 
+                onChange={handleSelectChange} 
+                className={`w-full p-3 rounded-md ${theme.input.border.light} ${theme.input.border.dark} ${theme.input.background.light} ${theme.input.background.dark} ${theme.input.text.light} ${theme.input.text.dark} ${theme.input.focus} ${theme.input.shadow} ${theme.input.hover}`}
+              >
                 <option value="" disabled>Remote Preferred</option>
                 <option value="yes">Yes</option>
                 <option value="no">No</option>
               </select>
             </div>
-            <div className="relative">
-              <input type="number" id="experience" name="experience" min="0" placeholder="Years of Experience" className="w-full p-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 text-black placeholder-gray-400 bg-gray-200" />
-            </div>
-            <div>
-              <label htmlFor="resume" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Resume</label>
+            <input 
+              type="number" 
+              id="experience" 
+              name="experience" 
+              min="0" 
+              placeholder="Years of Experience" 
+              className={`w-full p-3 rounded-md ${theme.input.border.light} ${theme.input.border.dark} ${theme.input.background.light} ${theme.input.background.dark} ${theme.input.text.light} ${theme.input.text.dark} ${theme.input.placeholder.light} ${theme.input.placeholder.dark} ${theme.input.focus} ${theme.input.shadow} ${theme.input.hover}`} 
+            />
+            <div className="mt-4">
+              <label htmlFor="file-upload" className="block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-2">
+                Upload Resume
+              </label>
               <div 
-                className={`mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md ${dragActive ? 'border-blue-400 bg-blue-50' : ''}`}
+                className={`w-full p-6 border-2 border-dashed rounded-md flex flex-col items-center justify-center cursor-pointer ${
+                  dragActive ? 'border-primary-500' : 'border-neutral-300 dark:border-neutral-600'
+                } ${theme.input.background.light} ${theme.input.background.dark} ${theme.input.text.light} ${theme.input.text.dark} hover:border-primary-500 transition-colors duration-300`}
                 onDragEnter={handleDrag}
                 onDragLeave={handleDrag}
                 onDragOver={handleDrag}
                 onDrop={handleDrop}
+                onClick={() => document.getElementById('file-upload')?.click()}
               >
-                <div className="space-y-1 text-center">
-                  <svg className="mx-auto h-12 w-12 text-gray-400" stroke="currentColor" fill="none" viewBox="0 0 48 48" aria-hidden="true">
-                    <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28M8 32l4 4m4-24h8m-4-4v8m-12 4h.02" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                  </svg>
-                  <div className="flex text-sm text-gray-600">
-                    <label htmlFor="file-upload" className="relative cursor-pointer font-medium text-blue-600 hover:text-blue-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-blue-500">
-                      <span>Upload a PDF</span>
-                      <input id="file-upload" name="file-upload" type="file" className="sr-only" onChange={handleChange} />
-                    </label>
-                  </div>
-                  <p className="text-xs text-gray-500">Up to 10MB</p>
-                </div>
+                <input
+                  id="file-upload"
+                  name="file-upload"
+                  type="file"
+                  accept=".pdf,.doc,.docx"
+                  onChange={handleChange}
+                  className="hidden"
+                />
+                <FaUpload className="text-4xl mb-2 text-neutral-400" />
+                <p className="text-sm text-center">
+                  {file ? file.name : 'Drag and drop your resume here, or click to select a file'}
+                </p>
+                {file && (
+                  <p className="text-xs text-primary-600 dark:text-primary-400 mt-2">
+                    File selected: {file.name}
+                  </p>
+                )}
               </div>
-              {file && <p className="mt-2 text-sm text-gray-500">File selected: {file.name}</p>}
             </div>
-            <button type="submit" className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-full transition duration-300 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50">
+            <button type="submit" className="w-full bg-primary-600 hover:bg-primary-700 text-white font-bold py-3 px-6 rounded-full transition duration-300 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-opacity-50">
               Submit Application
             </button>
           </form>

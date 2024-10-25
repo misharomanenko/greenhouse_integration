@@ -1,0 +1,62 @@
+:root {
+  /* Cool blue primary colors */
+  --color-primary-50: #E3F2FD;
+  --color-primary-100: #BBDEFB;
+  --color-primary-200: #90CAF9;
+  --color-primary-300: #64B5F6;
+  --color-primary-400: #42A5F5;
+  --color-primary-500: #2196F3;
+  --color-primary-600: #1E88E5;
+  --color-primary-700: #1976D2;
+  --color-primary-800: #1565C0;
+  --color-primary-900: #0D47A1;
+  
+  /* Teal accent colors */
+  --color-accent-400: #26A69A;
+  --color-accent-500: #00897B;
+  
+  /* Modern neutral colors */
+  --color-neutral-50: #FAFAFA;
+  --color-neutral-100: #F5F5F5;
+  --color-neutral-200: #EEEEEE;
+  --color-neutral-300: #E0E0E0;
+  --color-neutral-400: #BDBDBD;
+  --color-neutral-500: #9E9E9E;
+  --color-neutral-600: #757575;
+  --color-neutral-700: #616161;
+  --color-neutral-800: #424242;
+  --color-neutral-900: #212121;
+}
+
+.dark {
+  /* Darker shades for dark mode */
+  --color-primary-50: #0D47A1;
+  --color-primary-100: #1565C0;
+  --color-primary-200: #1976D2;
+  --color-primary-300: #1E88E5;
+  --color-primary-400: #2196F3;
+  --color-primary-500: #42A5F5;
+  --color-primary-600: #64B5F6;
+  --color-primary-700: #90CAF9;
+  --color-primary-800: #BBDEFB;
+  --color-primary-900: #E3F2FD;
+  
+  /* Lighter teal accents for dark mode */
+  --color-accent-400: #4DB6AC;
+  --color-accent-500: #26A69A;
+  
+  /* Inverted neutral colors for dark mode */
+  --color-neutral-50: #212121;
+  --color-neutral-100: #424242;
+  --color-neutral-200: #616161;
+  --color-neutral-300: #757575;
+  --color-neutral-400: #9E9E9E;
+  --color-neutral-500: #BDBDBD;
+  --color-neutral-600: #E0E0E0;
+  --color-neutral-700: #EEEEEE;
+  --color-neutral-800: #F5F5F5;
+  --color-neutral-900: #FAFAFA;
+}
+
+
+
