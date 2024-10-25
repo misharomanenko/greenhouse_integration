@@ -2,11 +2,11 @@ import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { FaBriefcase, FaMapMarkerAlt, FaClock, FaArrowLeft, FaUpload } from 'react-icons/fa';
-import { jobListings } from '@/data/jobListings';
-import { currentUser } from '@/types/Users';
-import { Job } from '@/types/Jobs';
-import { UserApplication } from '@/types/UserApplication';
-import { theme } from '@/styles/theme';
+import { jobListings } from 'app/data/jobListings';
+import { currentUser } from 'app/types/Users';
+import { Job } from 'app/data/jobs';
+import { UserApplication } from 'app/types/UserApplication';
+import { theme } from 'app/styles/theme';
 
 const SubmissionPopup = ({ onClose, message, isError }: { onClose: () => void, message: string, isError: boolean }) => (
   <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">

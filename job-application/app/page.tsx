@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { FaBriefcase, FaMapMarkerAlt, FaClock, FaSearch } from 'react-icons/fa';
-import { jobListings } from '@/data/jobListings';
+import { jobListings } from 'app/data/jobListings';
 import { IconBaseProps } from 'react-icons';
 
 type IconProps = IconBaseProps & { className?: string; 'aria-hidden'?: string };
