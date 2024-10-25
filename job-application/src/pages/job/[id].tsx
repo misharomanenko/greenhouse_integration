@@ -99,8 +99,6 @@ export default function JobDetails() {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!job) return;
-
-    const formData = new FormData(e.currentTarget);
     
     const application: UserApplication = {
       user_id: currentUser.id.toString(),
