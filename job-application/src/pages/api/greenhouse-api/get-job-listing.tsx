@@ -6,8 +6,9 @@ import { jobListings } from '@/data/jobs';
 import { JobListing } from '@/types/jobs';
 
 const API_KEY = 'f06b2b153e016f8e7c3632627af56b1d-7'; 
+// const API_KEY = process.env.GREENHOUSE_API_KEY?.toString();
 const JOB_ID = '4285367007';
-const USER_ID = '123456';
+// const JOB_ID = process.env.GREENHOUSE_JOB_ID?.toString();
 
 const GREENHOUSE_API_URL = `https://harvest.greenhouse.io/v1/jobs/${JOB_ID}`;
 

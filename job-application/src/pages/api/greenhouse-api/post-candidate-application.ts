@@ -3,9 +3,15 @@ import axios from 'axios';
 import fs from 'fs/promises';
 import path from 'path';
 
-const API_URL = 'https://harvest.greenhouse.io/v1/candidates/{id}/applications';
-const API_KEY = process.env.GREENHOUSE_API_KEY;
-const ON_BEHALF_OF = process.env.GREENHOUSE_USER_ID;
+// const API_URL = `https://harvest.greenhouse.io/v1/candidates/${process.env.CANDIDATE_ID}/applications`;
+const API_URL = 'https://harvest.greenhouse.io/v1/candidates/34555007007/applications';
+
+// const API_KEY = process.env.GREENHOUSE_API_KEY?.toString();
+const API_KEY = 'f06b2b153e016f8e7c3632627af56b1d-7'; 
+
+// const ON_BEHALF_OF = process.env.GREENHOUSE_USER_ID?.toString();
+const ON_BEHALF_OF = '4280249007'; 
+
 const ENABLE_POST_REQUEST = process.env.ENABLE_POST_REQUEST === 'true';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
@@ -18,12 +24,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const fileContent = await fs.readFile(applicationsPath, 'utf-8');
     const applications = JSON.parse(fileContent);
 
-    const candidateId = req.body.candidateId;
-    if (!candidateId) {
-      return res.status(400).json({ message: 'Candidate ID is required' });
-    }
+    // Always use the last application in the array
+    const application = applications[applications.length - 1];
 
-    const application = applications.find((app: any) => app.user_id === candidateId);
     if (!application) {
       return res.status(404).json({ message: 'Application not found' });
     }
@@ -42,13 +45,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       'On-Behalf-Of': ON_BEHALF_OF
     }
     
-    console.log(API_URL.replace('{id}', candidateId));
+    console.log(API_URL.replace('{id}', application.user_id));
     console.log('test_headers', test_headers);
     console.log('data', data);
 
     if (ENABLE_POST_REQUEST) {
       try {
-        const response = await axios.post(API_URL.replace('{id}', candidateId), data, {
+        const response = await axios.post(API_URL.replace('{id}', application.user_id), data, {
           headers: {
             'Authorization': `Basic ${Buffer.from(API_KEY + ':').toString('base64')}`,
             'Content-Type': 'application/json',
@@ -59,10 +62,17 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       } catch (error) {
         if (axios.isAxiosError(error)) {
           console.error('Axios error:', error.response?.data || error.message);
-          res.status(500).json({ 
-            message: 'Error submitting application to Greenhouse', 
-            error: error.response?.data || error.message || 'Unknown error'
-          });
+          if (error.response?.data?.errors?.[0]?.message === 'This candidate already has an active application on that job') {
+            res.status(409).json({ 
+              message: 'Application already exists',
+              error: 'You have already submitted an application for this job.'
+            });
+          } else {
+            res.status(500).json({ 
+              message: 'Error submitting application to Greenhouse', 
+              error: error.response?.data || error.message || 'Unknown error'
+            });
+          }
         }
       }
     } else {

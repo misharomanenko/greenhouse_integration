@@ -60,7 +60,7 @@ export interface User {
 }
 
 export const currentUser: User = {
-  id: 1234567890,
+  id: 34555007007,
   first_name: "John",
   last_name: "Locke",
   company: "The Tustin Box Company",
@@ -102,15 +102,6 @@ export const currentUser: User = {
       value: "@johnlocke"
     }
   ],
-  educations: [
-    {
-      school_id: 459,
-      discipline_id: 940,
-      degree_id: 1230,
-      start_date: "2001-09-15T00:00:00.000Z",
-      end_date: "2004-05-15T00:00:00.000Z"
-    }
-  ],
   employments: [
     {
       company_name: "Greenhouse",
@@ -119,9 +110,7 @@ export const currentUser: User = {
       end_date: "2016-05-15T00:00:00.000Z"
     }
   ],
-  tags: [
-    "Walkabout",
-    "Orientation"
-  ],
-  applications: [] 
+  applications: [],
+  educations: [],
+  tags: []
 };

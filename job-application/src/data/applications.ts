@@ -4,13 +4,7 @@ import path from 'path';
 
 export interface UserApplication {
   job_id: number;
-  source_id: number;
   user_id: string;
-  initial_stage_id: number;
-  referrer: {
-    type: string;
-    value: number;
-  };
   attachments: {
     filename: string;
     type: string;
