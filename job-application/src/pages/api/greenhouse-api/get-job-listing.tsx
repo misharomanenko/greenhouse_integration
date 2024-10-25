@@ -2,7 +2,8 @@ import { NextApiHandler } from 'next';
 import axios from 'axios';
 import fs from 'fs/promises';
 import path from 'path';
-import { JobListing, jobListings } from '@/types/Jobs';
+import { JobListing } from '@/types/Jobs';
+import { jobListings } from '@/types/Jobs';
 
 interface JobData {
   id: number;
