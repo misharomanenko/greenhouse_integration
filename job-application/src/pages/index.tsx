@@ -2,8 +2,7 @@ import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { FaBriefcase, FaMapMarkerAlt, FaClock, FaArrowLeft, FaSearch } from 'react-icons/fa';
-import { jobListings } from '@/types/jobs';
-import { currentUser } from '@/types/user';
+import { jobListings } from '@/types/Jobs';
 
 export default function Home() {
   const [searchTerm, setSearchTerm] = useState('');

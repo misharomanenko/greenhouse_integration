@@ -2,8 +2,7 @@ import { NextApiHandler } from 'next';
 import axios from 'axios';
 import fs from 'fs/promises';
 import path from 'path';
-import { jobListings } from '@/types/jobs';
-import { JobListing } from '@/types/job';
+import { JobListing, jobListings } from '@/types/Jobs';
 
 const API_KEY = process.env.GREENHOUSE_API_KEY || '';
 const JOB_ID = process.env.GREENHOUSE_JOB_ID || '';
@@ -57,7 +56,7 @@ const updateJobListings = async (jobData: any) => {
 
   const jobsFilePath = path.join(process.cwd(), 'src', 'data', 'jobs.ts');
   const jobsFileContent = `
-import { JobListing } from '@/data/jobs';
+import { JobListing } from '@/types/job';
 
 export const jobListings: JobListing[] = ${JSON.stringify(updatedJobListings, null, 2)};
 `;

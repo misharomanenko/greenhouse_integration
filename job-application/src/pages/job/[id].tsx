@@ -2,10 +2,9 @@ import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { FaBriefcase, FaMapMarkerAlt, FaClock, FaArrowLeft, FaUpload } from 'react-icons/fa';
-import { jobListings } from '@/types/jobs';
-import { addUserApplication } from '@/types/Application';
-import { currentUser } from '@/types/user';
-import { Job } from '@/types/job';
+import { jobListings } from '@/types/Jobs';
+import { currentUser } from '@/types/Users';
+import { Job } from '@/types/Jobs';
 import { UserApplication } from '@/types/UserApplication';
 import { theme } from '@/styles/theme';
 
