@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import { FaUser, FaMoon, FaSun } from 'react-icons/fa';
 import { useState } from 'react';
-import { currentUser } from '@/types/Users';
+import { currentUser } from 'app/types/Users';
 import { useTheme } from 'next-themes';
 
 const Header = () => {
