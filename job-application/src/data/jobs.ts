@@ -1,5 +1,5 @@
 
-import { JobListing } from '@/types/job';
+import { JobListing } from '@/types/jobs';
 
 export const jobListings: JobListing[] = [
   {

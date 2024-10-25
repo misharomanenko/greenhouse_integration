@@ -22,9 +22,9 @@ const Header = () => {
           {showUserInfo && (
             <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-700 rounded-md shadow-lg py-1 z-10">
               <div className="px-4 py-2 text-sm text-gray-700 dark:text-gray-200">
-                <p><strong>Name:</strong> {currentUser.name}</p>
-                <p><strong>Email:</strong> {currentUser.email}</p>
-                <p><strong>Country:</strong> {currentUser.country}</p>
+                <p><strong>Name:</strong> {currentUser.first_name} {currentUser.last_name}</p>
+                <p><strong>Email:</strong> {currentUser.email_addresses[0].value}</p>
+                <p><strong>Address:</strong> {currentUser.addresses[0].value}</p>
               </div>
             </div>
           )}

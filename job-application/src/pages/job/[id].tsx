@@ -26,16 +26,16 @@ interface Job {
   description: string;
 }
 
-const SubmissionPopup = ({ onClose }: { onClose: () => void }) => (
+const SubmissionPopup = ({ onClose, message, isError }: { onClose: () => void, message: string, isError: boolean }) => (
   <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
     <div className="bg-white dark:bg-neutral-800 rounded-lg p-8 max-w-md w-full shadow-xl transform transition-all duration-300 scale-100">
-      <h2 className="text-2xl font-bold mb-4 text-primary-600 dark:text-primary-400">Application Submitted!</h2>
-      <p className="text-gray-700 dark:text-gray-300 mb-6">Thank you for your application. We'll be in touch soon!</p>
+      <h2 className="text-2xl font-bold mb-4 text-primary-600 dark:text-primary-400">Application Status</h2>
+      <p className="text-gray-700 dark:text-gray-300 mb-6">{message}</p>
       <button 
         onClick={onClose}
         className="w-full bg-primary-600 hover:bg-primary-700 text-white font-bold py-3 px-6 rounded-full transition duration-300 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-opacity-50"
       >
-        Close
+        {isError ? 'Close' : 'Back to Listings'}
       </button>
     </div>
   </div>
@@ -50,6 +50,8 @@ export default function JobDetails() {
   const [dragActive, setDragActive] = useState(false);
   const [file, setFile] = useState<File | null>(null);
   const [showPopup, setShowPopup] = useState(false);
+  const [selectedOption, setSelectedOption] = useState('');
+  const [popupMessage, setPopupMessage] = useState('');
 
   useEffect(() => {
     if (!id) return;
@@ -120,39 +122,83 @@ export default function JobDetails() {
     const formData = new FormData(e.currentTarget);
     
     const application: UserApplication = {
-      userId: currentUser.userId,
-      name: formData.get('name') as string,
-      email: formData.get('email') as string,
-      linkedIn: formData.get('linkedin') as string,
-      desiredCompensation: formData.get('compensation') as string,
-      remotePreference: formData.get('remote') as string,
-      yearsOfExperience: parseInt(formData.get('experience') as string, 10),
-      resumeFileName: file ? file.name : '',
-      jobDetails: {
-        ...job,
-        id: job.id.toString()
-      },
-      applicationDate: new Date().toISOString(),
+      user_id: currentUser.id.toString(),
+      job_id: parseInt(job.id),
+      attachments: []
     };
 
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = async () => {
+        const base64String = reader.result as string;
+        application.attachments.push({
+          filename: file.name,
+          type: "resume",
+          content: base64String.split(',')[1],
+          content_type: file.type
+        });
+
+        try {
+          // Submit application to local storage/database
+          const response = await fetch('/api/submit-application', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(application),
+          });
+
+          if (response.ok) {
+            // If local submission is successful, submit to Greenhouse
+            await submitApplication(currentUser.id.toString());
+            setShowPopup(true);
+          } else {
+            throw new Error('Failed to submit application');
+          }
+        } catch (error) {
+          console.error('Error submitting application:', error);
+          alert('Failed to submit application. Please try again.');
+        }
+      };
+      reader.readAsDataURL(file);
+    } else {
+      alert('Please upload a resume file.');
+    }
+  };
+
+  const submitApplication = async (candidateId: string) => {
     try {
-      const response = await fetch('/api/submit-application', {
+      const response = await fetch('/api/greenhouse-api/post-candidate-application', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(application),
+        body: JSON.stringify({ candidateId }),
       });
 
-      if (response.ok) {
-        setShowPopup(true);
+      const result = await response.json();
+
+      if (!response.ok) {
+        if (response.status === 409) {
+          setShowPopup(true);
+          setPopupMessage('You have already submitted an application for this job.');
+        } else {
+          throw new Error(result.error || 'Failed to submit application to Greenhouse');
+        }
       } else {
-        throw new Error('Failed to submit application');
+        console.log('Application submitted to Greenhouse:', result);
+        setShowPopup(true);
+        setPopupMessage('Application submitted successfully!');
       }
     } catch (error) {
-      console.error('Error submitting application:', error);
-      alert('Failed to submit application. Please try again.');
+      console.error('Error submitting application to Greenhouse:', error);
+      setShowPopup(true);
+      setPopupMessage('An error occurred while submitting your application. Please try again later.');
     }
+  };
+
+  const handleSelectChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    setSelectedOption(event.target.value);
   };
 
   return (
@@ -193,8 +239,8 @@ export default function JobDetails() {
               <input type="text" id="compensation" name="compensation" placeholder="Desired Compensation" className="w-full p-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 text-black placeholder-gray-400 bg-gray-200" />
             </div>
             <div className="relative">
-              <select id="remote" name="remote" className="w-full p-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 appearance-none text-black bg-gray-200">
-                <option value="" disabled selected className="text-gray-400">Remote Preferred</option>
+              <select id="remote" name="remote" value={selectedOption} onChange={handleSelectChange} className="w-full p-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 appearance-none text-black bg-gray-200">
+                <option value="" disabled>Remote Preferred</option>
                 <option value="yes">Yes</option>
                 <option value="no">No</option>
               </select>
@@ -232,10 +278,14 @@ export default function JobDetails() {
           </form>
         </div>
       </main>
-      {showPopup && <SubmissionPopup onClose={() => {
-        setShowPopup(false);
-        router.push('/');
-      }} />}
+      {showPopup && <SubmissionPopup 
+        message={popupMessage}
+        isError={popupMessage !== 'Application submitted successfully!'}
+        onClose={() => {
+          setShowPopup(false);
+          router.push('/');
+        }} 
+      />}
     </div>
   );
 }

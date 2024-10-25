@@ -20,7 +20,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       applications.push(application);
       await fs.writeFile(applicationsPath, JSON.stringify(applications, null, 2));
 
-      res.status(200).json({ message: 'Application submitted successfully' });
+      // Read the last application from the array
+      const lastApplication = applications[applications.length - 1];
+
+      res.status(200).json({ message: 'Application submitted successfully', application: lastApplication });
     } catch (error) {
       console.error('Error submitting application:', error);
       res.status(500).json({ message: 'Error submitting application' });
@@ -30,4 +33,3 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     res.status(405).end(`Method ${req.method} Not Allowed`);
   }
 }
-
