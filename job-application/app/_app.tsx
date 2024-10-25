@@ -1,7 +1,7 @@
 import "@/styles/globals.css";
 import type { AppProps } from "next/app";
 import Header from "app/components/Header";
-import Layout from "app/components/Layout";
+import Layout from "app/layout";
 import { useEffect } from 'react';
 import { ThemeProvider } from 'next-themes';
 
