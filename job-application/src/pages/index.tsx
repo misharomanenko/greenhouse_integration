@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { FaBriefcase, FaMapMarkerAlt, FaClock, FaSearch } from 'react-icons/fa';
-import { jobListings } from '@/types/Jobs';
+import { jobListings } from '@/data/jobListings';
 
 export default function Home() {
   const [searchTerm, setSearchTerm] = useState('');

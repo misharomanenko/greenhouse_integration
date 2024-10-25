@@ -3,7 +3,7 @@ import axios from 'axios';
 import fs from 'fs/promises';
 import path from 'path';
 import { JobListing } from '@/types/Jobs';
-import { jobListings } from '@/types/Jobs';
+import { jobListings } from '@/data/jobListings';
 
 interface JobData {
   id: number;

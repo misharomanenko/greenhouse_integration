@@ -2,7 +2,7 @@ import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { FaBriefcase, FaMapMarkerAlt, FaClock, FaArrowLeft, FaUpload } from 'react-icons/fa';
-import { jobListings } from '@/types/Jobs';
+import { jobListings } from '@/data/jobListings';
 import { currentUser } from '@/types/Users';
 import { Job } from '@/types/Jobs';
 import { UserApplication } from '@/types/UserApplication';
