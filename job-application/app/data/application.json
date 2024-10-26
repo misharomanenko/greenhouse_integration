@@ -1,0 +1,14 @@
+[
+  {
+    "user_id": "34555007007",
+    "job_id": 4285367007,
+    "attachments": [
+      {
+        "filename": "John Doe Resume.pdf",
+        "type": "resume",
+        "content": "Hello",
+        "content_type": "application/pdf"
+      }
+    ]
+  }
+]
