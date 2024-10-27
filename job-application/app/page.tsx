@@ -151,7 +151,7 @@ const Dashboard: React.FC = () => {
         variants={itemVariants}
         className='mb-6 sm:mb-8 max-w-[1000px] w-full'
       >
-        <h1 className='text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 dark:text-gray-100 leading-tight mb-3 sm:mb-4'>
+        <h1 className='text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 dark:text-gray-100 leading-tight mb-3 sm:mb-4 text-center'>
           Open Position
         </h1>
       </motion.div>
