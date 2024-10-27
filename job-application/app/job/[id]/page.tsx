@@ -17,15 +17,15 @@ import { message } from 'antd';
 
 const SETTINGS_MESSAGE = {
   title: "Profile Information",
-  description: "These fields are pre-filled with your profile information. You can edit them here for this application.",
+  description: "These fields are managed in your profile settings. Click below to edit.",
 };
 
 const applicationFields: Field[] = [
   // Personal Information
-  { name: 'first_name', type: 'input', label: 'First Name', required: true },
-  { name: 'last_name', type: 'input', label: 'Last Name', required: true },
-  { name: 'company', type: 'input', label: 'Current Company', required: false },
-  { name: 'title', type: 'input', label: 'Current Title', required: false },
+  { name: 'first_name', type: 'input', label: 'First Name', required: true, readOnly: false },
+  { name: 'last_name', type: 'input', label: 'Last Name', required: true, readOnly: false },
+  { name: 'company', type: 'input', label: 'Current Company', required: false, readOnly: false },
+  { name: 'title', type: 'input', label: 'Current Title', required: false, readOnly: false },
   
   // Contact Information
   {
@@ -33,18 +33,28 @@ const applicationFields: Field[] = [
     type: 'select',
     label: 'Phone Type',
     required: true,
-    options: ['mobile', 'home', 'work'],
+    options: ['mobile', 'home', 'work']
   },
-  { name: 'phone_value', type: 'input', label: 'Phone Number', required: true },
+  { 
+    name: 'phone_value', 
+    type: 'input', 
+    label: 'Phone Number', 
+    required: true 
+  },
   
   {
     name: 'email_addresses',
     type: 'select',
     label: 'Email Type',
     required: true,
-    options: ['personal', 'work'],
+    options: ['personal', 'work']
   },
-  { name: 'email_value', type: 'input', label: 'Email Address', required: true },
+  { 
+    name: 'email_value', 
+    type: 'input', 
+    label: 'Email Address', 
+    required: true 
+  },
   
   // Addresses
   {
@@ -52,9 +62,9 @@ const applicationFields: Field[] = [
     type: 'select',
     label: 'Address Type',
     required: false,
-    options: ['home', 'work'],
+    options: ['home', 'work']
   },
-  { name: 'address_value', type: 'input', label: 'Address', required: false },
+  { name: 'address_value', type: 'input', label: 'Address', required: false, readOnly: false },
   
   // Websites & Social Media
   {
@@ -62,11 +72,11 @@ const applicationFields: Field[] = [
     type: 'select',
     label: 'Website Type',
     required: false,
-    options: ['personal', 'company', 'portfolio'],
+    options: ['personal', 'company', 'portfolio']
   },
-  { name: 'website_value', type: 'input', label: 'Website URL', required: false },
+  { name: 'website_value', type: 'input', label: 'Website URL', required: false, readOnly: false },
   
-  { name: 'social_media', type: 'input', label: 'Social Media Profiles', required: false },
+  { name: 'social_media', type: 'input', label: 'Social Media Profiles', required: false, readOnly: false },
   { name: 'resume', type: 'file', label: 'Resume', required: true },
 ];
 
@@ -143,9 +153,10 @@ export default function JobPage() {
     }]);
   };
 
+  // Remove or modify handleSave since we're handling save in FileUpload
   const handleSave = async (data: any) => {
-    await saveApplication(jobId, data);
-    message.success('Application saved successfully');
+    // Don't do anything since FileUpload handles the save
+    return;
   };
 
   return (
@@ -153,7 +164,7 @@ export default function JobPage() {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.5 }}
-      className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8"
+      className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8"
     >
       <Button
         variant="ghost"
@@ -196,6 +207,7 @@ export default function JobPage() {
       <div className="mt-8">
         <h3 className="text-xl font-semibold mb-4">Application Form</h3>
         
+        {/* Add this settings message */}
         <div className="mb-6 p-4 bg-gray-50 dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">
           <h4 className="text-lg font-medium text-gray-900 dark:text-gray-100">
             {SETTINGS_MESSAGE.title}
@@ -203,6 +215,13 @@ export default function JobPage() {
           <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
             {SETTINGS_MESSAGE.description}
           </p>
+          <Button
+            variant="link"
+            className="mt-2 text-primary-blue hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 p-0"
+            onClick={() => router.push('/settings')}
+          >
+            Go to Settings
+          </Button>
         </div>
 
         <ApplicationForm

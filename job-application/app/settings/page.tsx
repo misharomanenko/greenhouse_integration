@@ -164,39 +164,37 @@ const SettingsPage: React.FC = () => {
   if (loading) return <ModernLoader />;
 
   return (
-    <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div className='space-y-8'>
-        <div className='flex flex-col md:flex-row justify-between items-start md:items-center mb-6 space-y-4 md:space-y-0'>
-          <nav className='flex flex-wrap gap-2 bg-gray-100 dark:bg-gray-800 p-1 rounded-lg'>
-            {tabs.map((tab) => (
-              <button
-                key={tab.id}
-                onClick={() => setActiveTab(tab.id)}
-                className={`${
-                  activeTab === tab.id
-                    ? 'bg-white dark:bg-gray-700 text-primary-blue shadow-sm'
-                    : 'text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
-                } flex items-center px-4 py-2 rounded-md font-medium text-sm transition-all duration-200 ease-in-out`}
-              >
-                <tab.icon className='mr-2 h-5 w-5' />
-                {tab.label}
-              </button>
-            ))}
-          </nav>
-
-          {activeTab === 'personal' && (
-            <Button
-              onClick={() => setSaving(true)}
-              disabled={saving}
-              className='bg-primary-blue hover:bg-primary-blue-dark text-white transition-all duration-200 ease-in-out'
+    <div className='space-y-8'>
+      <div className='flex flex-col md:flex-row justify-between items-start md:items-center mb-6 space-y-4 md:space-y-0'>
+        <nav className='flex flex-wrap gap-2 bg-gray-100 dark:bg-gray-800 p-1 rounded-lg'>
+          {tabs.map((tab) => (
+            <button
+              key={tab.id}
+              onClick={() => setActiveTab(tab.id)}
+              className={`${
+                activeTab === tab.id
+                  ? 'bg-white dark:bg-gray-700 text-primary-blue shadow-sm'
+                  : 'text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
+              } flex items-center px-4 py-2 rounded-md font-medium text-sm transition-all duration-200 ease-in-out`}
             >
-              {saving ? 'Saving...' : 'Save Changes'}
-            </Button>
-          )}
-        </div>
+              <tab.icon className='mr-2 h-5 w-5' />
+              {tab.label}
+            </button>
+          ))}
+        </nav>
 
-        <div className='p-6'>{renderTabContent()}</div>
+        {activeTab === 'personal' && (
+          <Button
+            onClick={() => setSaving(true)}
+            disabled={saving}
+            className='bg-primary-blue hover:bg-primary-blue-dark text-white transition-all duration-200 ease-in-out'
+          >
+            {saving ? 'Saving...' : 'Save Changes'}
+          </Button>
+        )}
       </div>
+
+      <div className='p-6'>{renderTabContent()}</div>
     </div>
   );
 };

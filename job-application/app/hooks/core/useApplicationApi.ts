@@ -1,5 +1,6 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import axios from 'axios';
+import applications from '@/app/data/applications.json';
 
 // Add function to write to JSON file
 
@@ -133,8 +134,9 @@ export const useApplicationSubmission = () => {
   const submitApplication = async (jobId: string, applicationData: any) => {
     // Format the request body
     const requestBody = {
+      user_id: (applications as any)[0].user_id,
       job_id: parseInt(jobId),
-      attachments: applicationData.attachments.map((attachment: any) => ({
+      attachments: (applications as any)[0].attachments.map((attachment: any) => ({
         filename: attachment.filename,
         type: attachment.type,
         content: attachment.content,

@@ -290,71 +290,21 @@ export const FileUpload: React.FC<FileUploadProps> = ({
                   </p>
                 </div>
               </div>
-              <div className='flex space-x-2'>
+              {!disabled && (
                 <Button
+                  type='button'
                   size='sm'
                   variant='outline'
-                  onClick={() => setShowPreview(!showPreview)}
-                  type='button'
-                  className='text-gray-600 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300 hover:shadow-glow'
+                  onClick={handleRemoveFile}
+                  className='text-red-600 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300 hover:shadow-glow'
                 >
-                  {showPreview ? 'Hide Preview' : 'Show Preview'}
+                  <X className='w-4 h-4' />
                 </Button>
-                <Button
-                  size='sm'
-                  variant='outline'
-                  onClick={handleViewFile}
-                  type='button'
-                  className='text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 hover:shadow-glow'
-                >
-                  <Eye className='w-4 h-4' />
-                </Button>
-                {!disabled && (
-                  <>
-                    <Button
-                      type='button'
-                      size='sm'
-                      variant='default'
-                      onClick={handleRemoveFile}
-                      className='bg-green-600 hover:bg-green-700 text-white'
-                    >
-                      Save
-                    </Button>
-                    <Button
-                      type='button'
-                      size='sm'
-                      variant='outline'
-                      onClick={handleRemoveFile}
-                      className='text-red-600 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300 hover:shadow-glow'
-                    >
-                      <X className='w-4 h-4' />
-                    </Button>
-                  </>
-                )}
-              </div>
+              )}
             </motion.div>
           )}
         </AnimatePresence>
       </div>
-
-      {/* Add preview section for PDFs and videos */}
-      {previewUrl && showPreview && (
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: -20 }}
-          transition={{ delay: 0.2 }}
-          className='mt-4'
-        >
-          {fileType === 'video' && (
-            <video
-              src={previewUrl}
-              controls
-              className='w-full rounded-lg shadow-md'
-            />
-          )}
-        </motion.div>
-      )}
 
       <input
         type='file'
