@@ -35,7 +35,7 @@ export function SupportModal() {
       <DialogContent className='bg-gray-900 backdrop-blur-xl p-4 sm:p-6 rounded-2xl max-w-[95vw] sm:max-w-md w-full border border-white/10 hover:border-white/20 transition-all duration-300'>
         <DialogHeader>
           <DialogTitle className='text-xl sm:text-2xl font-bold text-primary-white mb-2'>
-            Contact KP Fellows Support
+            Contact Support
           </DialogTitle>
           <DialogDescription className='text-sm sm:text-base text-gray-400 mb-4'>
             We're here to help! Please fill out the form below or reach out to
