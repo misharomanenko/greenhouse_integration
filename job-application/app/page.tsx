@@ -1,65 +1,124 @@
 'use client';
 
-import { useState } from 'react';
-import Link from 'next/link';
-import { FaBriefcase, FaMapMarkerAlt, FaClock, FaSearch } from 'react-icons/fa';
-import { jobListings } from 'app/data/jobListings';
-import { IconBaseProps } from 'react-icons';
+import { useRouter } from 'next/navigation';
+import React from 'react';
+import { motion } from 'framer-motion';
 
-type IconProps = IconBaseProps & { className?: string; 'aria-hidden'?: string };
+import { ArrowRight } from 'lucide-react';
 
-export default function Home() {
-  const [searchTerm, setSearchTerm] = useState('');
+import { Button } from '@/app/components/ui/button';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from '@/app/components/ui/card';
+import { jobListings } from '@/app/data/jobListings';
 
-  const filteredJobs = jobListings.filter(job =>
-    job.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    job.company.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.1,
+      delayChildren: 0.2,
+    },
+  },
+};
+
+const itemVariants = {
+  hidden: { opacity: 0, y: 20 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: {
+      type: 'spring',
+      stiffness: 100,
+      damping: 15,
+    },
+  },
+};
+
+const Dashboard: React.FC = () => {
+  const router = useRouter();
+
+  const handleViewJob = (id: string) => {
+    router.push(`/job/${id}`);
+  };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-primary-50 to-primary-100 dark:from-neutral-900 dark:to-neutral-800 text-neutral-800 dark:text-neutral-200 flex items-center justify-center">
-      <main className="container mx-auto px-6 py-16">
-        <h1 className="text-6xl font-bold mb-16 text-center text-primary-600 dark:text-primary-400 drop-shadow-lg">Job Openings</h1>
-        
-        <div className="max-w-3xl mx-auto mb-12">
-          <div className="relative">
-            <input
-              type="text"
-              placeholder="Search jobs..."
-              className="w-full p-5 pl-14 rounded-full border-2 border-primary-300 dark:border-primary-700 bg-white dark:bg-neutral-800 text-neutral-800 dark:text-neutral-200 placeholder-neutral-500 dark:placeholder-neutral-400 focus:outline-none focus:ring-2 focus:ring-primary-500 dark:focus:ring-primary-400 transition duration-300 text-lg"
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-            />
-            <FaSearch 
-              className="absolute left-5 top-1/2 transform -translate-y-1/2 text-current text-xl" 
-              aria-hidden="true" 
-              {...({} as IconProps)}
-            />
-          </div>
-        </div>
+    <motion.div
+      initial="hidden"
+      animate="visible"
+      variants={containerVariants}
+      className='text-foreground w-full flex flex-col items-center'
+    >
+      <motion.div 
+        variants={itemVariants}
+        className='mb-6 sm:mb-8 max-w-[1000px] w-full'
+      >
+        <h1 className='text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 dark:text-gray-100 leading-tight mb-3 sm:mb-4'>
+          Open Positions
+        </h1>
+      </motion.div>
+      
+      <motion.p 
+        variants={itemVariants}
+        className='text-gray-600 dark:text-gray-300 leading-relaxed text-base max-w-[1000px] w-full mb-6 sm:mb-8'
+      >
+        Join our team and work on cutting-edge technology with industry leaders.
+        We offer competitive compensation and great benefits.
+      </motion.p>
 
-        <div className="space-y-12 max-w-3xl mx-auto">
-          {filteredJobs.map(job => (
-            <Link href={`/job/${job.id}`} key={job.id} className="block">
-              <div className="bg-white dark:bg-neutral-800 rounded-xl shadow-xl hover:shadow-2xl transition-shadow duration-300 p-8 border border-primary-200 dark:border-primary-700">
-                <h2 className="text-2xl font-semibold mb-4 text-primary-600 dark:text-primary-400">{job.title}</h2>
-                <p className="text-neutral-600 dark:text-neutral-300 mb-4 flex items-center text-lg">
-                  <span className="mr-3 text-primary-400"><FaBriefcase size="1em" /></span> {job.company}
-                </p>
-                <p className="text-neutral-500 dark:text-neutral-400 text-base flex items-center mb-6">
-                  <span className="mr-3 text-primary-400"><FaMapMarkerAlt size="1em" /></span> {job.location}
-                </p>
-                <div className="flex items-center">
-                  <FaClock className="text-primary-400 text-base mr-3" aria-hidden="true" {...({} as IconProps)} />
-                  <span className="bg-secondary-100 dark:bg-secondary-900 text-secondary-800 dark:text-secondary-200 text-sm px-4 py-2 rounded-full">
-                    {job.type}
-                  </span>
-                </div>
-              </div>
-            </Link>
+      <motion.div 
+        variants={itemVariants}
+        className='mt-6 sm:mt-8 max-w-[1000px] w-full'
+      >
+        <motion.div 
+          variants={containerVariants}
+          className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6'
+        >
+          {jobListings.map((job, index) => (
+            <motion.div
+              key={job.id}
+              variants={itemVariants}
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+              onClick={() => handleViewJob(job.id)}
+              className="cursor-pointer"
+            >
+              <Card className='h-[200px] overflow-hidden transition-all duration-300 bg-white dark:bg-gray-800 border-none rounded-lg sm:rounded-xl shadow-md hover:shadow-lg hover:shadow-gray-200 dark:hover:shadow-gray-700 flex flex-col'>
+                <CardHeader className='bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-700 dark:to-gray-600 p-4'>
+                  <CardTitle className='text-xl sm:text-2xl font-bold text-gray-900 dark:text-gray-100 mb-1 line-clamp-1'>
+                    {job.title}
+                  </CardTitle>
+                  <CardDescription className='text-xs sm:text-sm font-medium text-gray-700 dark:text-gray-300'>
+                    {job.company} • {job.location}
+                  </CardDescription>
+                </CardHeader>
+                <CardFooter className='bg-gray-50 dark:bg-gray-700 p-4 mt-auto'>
+                  <Button
+                    className='w-full bg-gradient-to-r from-gray-900 to-gray-700 dark:from-gray-700 dark:to-gray-900 text-white hover:from-gray-800 hover:to-gray-600 dark:hover:from-gray-600 dark:hover:to-gray-800 transition-all duration-300 shadow-md rounded-full py-2 text-sm sm:text-base font-semibold group'
+                  >
+                    View Details 
+                    <motion.span
+                      className='ml-2 inline-block'
+                      whileHover={{ x: 5 }}
+                      transition={{ type: 'spring', stiffness: 200 }}
+                    >
+                      <ArrowRight size={14} />
+                    </motion.span>
+                  </Button>
+                </CardFooter>
+              </Card>
+            </motion.div>
           ))}
-        </div>
-      </main>
-    </div>
+        </motion.div>
+      </motion.div>
+    </motion.div>
   );
-}
+};
+
+export default React.memo(Dashboard);
