@@ -1,22 +1,8 @@
 import { NextResponse } from 'next/server';
-import { writeFile, readFile, mkdir } from 'fs/promises';
-import { join } from 'path';
 
-// Helper function to ensure directory exists
-async function ensureDirectory(dirPath: string) {
-  try {
-    await mkdir(dirPath, { recursive: true });
-  } catch (error) {
-    if ((error as NodeJS.ErrnoException).code !== 'EEXIST') {
-      throw error;
-    }
-  }
-}
-
-// Helper function to get applications file path
-function getApplicationsPath() {
-  return join(process.cwd(), 'data', 'applications.json');
-}
+// In-memory storage for development purposes
+// In production, this should be replaced with a proper database
+let applications: any[] = [];
 
 export async function POST(req: Request) {
   try {
@@ -36,28 +22,8 @@ export async function POST(req: Request) {
       );
     }
 
-    const applicationsPath = getApplicationsPath();
-    await ensureDirectory(join(process.cwd(), 'data'));
-
-    // Read existing applications
-    let applications = [];
-    try {
-      const existingData = await readFile(applicationsPath, 'utf8');
-      applications = JSON.parse(existingData);
-      if (!Array.isArray(applications)) {
-        applications = [];
-      }
-    } catch (error) {
-      if ((error as NodeJS.ErrnoException).code !== 'ENOENT') {
-        throw error;
-      }
-    }
-
-    // Add new application
+    // Add new application to in-memory storage
     applications.push(data);
-
-    // Write back to file
-    await writeFile(applicationsPath, JSON.stringify(applications, null, 2), 'utf8');
 
     return NextResponse.json({ 
       message: 'Application saved successfully', 
@@ -84,36 +50,21 @@ export async function GET(req: Request) {
       );
     }
 
-    const applicationsPath = getApplicationsPath();
+    const application = applications.find(
+      (app) => app.job_id === parseInt(jobId)
+    );
 
-    try {
-      const data = await readFile(applicationsPath, 'utf8');
-      const applications = JSON.parse(data);
-
-      const application = Array.isArray(applications)
-        ? applications.find((app) => app.job_id === parseInt(jobId))
-        : null;
-
-      if (!application) {
-        return NextResponse.json(
-          { message: 'Not Found', error: 'No saved application found' },
-          { status: 404 }
-        );
-      }
-
-      return NextResponse.json({
-        message: 'Application retrieved successfully',
-        data: application
-      });
-    } catch (error) {
-      if ((error as NodeJS.ErrnoException).code === 'ENOENT') {
-        return NextResponse.json(
-          { message: 'Not Found', error: 'No saved application found' },
-          { status: 404 }
-        );
-      }
-      throw error;
+    if (!application) {
+      return NextResponse.json(
+        { message: 'Not Found', error: 'No saved application found' },
+        { status: 404 }
+      );
     }
+
+    return NextResponse.json({
+      message: 'Application retrieved successfully',
+      data: application
+    });
   } catch (error) {
     console.error('Error retrieving application data:', error);
     return NextResponse.json(

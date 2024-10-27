@@ -24,6 +24,7 @@ export interface Field {
   label: string;
   options?: string[] | { value: string; label: string }[];
   required: boolean;
+  readOnly?: boolean;  // Make readOnly optional
   validation?: {
     minLength?: number;
     maxLength?: number;
@@ -61,7 +62,7 @@ const ApplicationForm: React.FC<ApplicationFormProps> = ({
   applicationType,
   applicationId,
   fields,
-  readOnly = false,
+  readOnly = false,  // This prop controls the entire form's readonly state
   initialValues,
   onSubmit,
   onSave
@@ -139,6 +140,7 @@ const ApplicationForm: React.FC<ApplicationFormProps> = ({
         ...field,
         id: `${field.name}-${index}`,
         value: methods.watch(field.name),
+        // Remove the readOnly setting here since we want fields to be editable
         onChange:
           field.type === 'file'
             ? (file: File | null, fileKey: string | null) =>
@@ -226,7 +228,8 @@ const ApplicationForm: React.FC<ApplicationFormProps> = ({
               <motion.div key={field.id} variants={fadeInUp}>
                 <FormField
                   field={field}
-                  disabled={!applicationState.isEditable || readOnly}
+                  // Only disable if the form is explicitly set as readonly
+                  disabled={readOnly}
                   applicationId={applicationId}
                   error={getErrorMessage(errors[field.name] as FieldError)}
                 />
